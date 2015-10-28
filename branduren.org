@@ -1,0 +1,1725 @@
+#+TITLE:     Emacs configuration
+#+AUTHOR:    Brandur Øssursson
+#+EMAIL:     branduren@gmail.com
+
+* About this file
+This file makes my life and work a joy.
+
+* Configuration
+** Personal information
+
+#+begin_src emacs-lisp
+  (setq user-full-name "Brandur Øssursson"
+        user-mail-address "branduren@gmail.com.")
+#+end_src
+
+** Emacs initialization
+*** Fixes
+
+About fix: Somehow kmacro-edit-lossage doesn't work out of the box. It gives "Key sequence C-h l is not defined". This fixes the problem
+
+#+begin_src emacs-lisp
+  (defun kmacro-edit-lossage-mod ()
+     "Edit most recent 300 keystrokes as a keyboard macro."
+     (interactive)
+     (kmacro-push-ring)
+     (edit-kbd-macro 'view-lossage))
+(global-set-key (kbd "C-x C-k l") 'kmacro-edit-lossage-mod)
+#+end_src
+
+*** Setup package handeling(handle if use-package isn't installed!!!!)
+
+Add package archives
+#+begin_src emacs-lisp
+        (setq package-archives
+              '(("gnu"         . "http://elpa.gnu.org/packages/")
+                ("org"         . "http://orgmode.org/elpa/")
+                ("melpa"       . "http://melpa.milkbox.net/packages/")
+;                ("marmalade"   . "http://marmalade-repo.org/packages/")
+))
+        (package-initialize t)
+#+end_src
+
+Make install function.
+#+begin_src emacs-lisp
+(defun myfunc/package-install (package)
+    (unless (package-installed-p package)
+      (package-install package)))
+
+(defun myfunc/ensure-package-installed (packages)
+  (if (listp packages)
+    (dolist (package packages)
+      (myfunc/package-install package))
+    (myfunc/package-install packages)))
+#+end_src
+
+*** use-package
+
+Load require usepackage
+
+#+begin_src emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/elpa/org-plus-contrib-20141201")
+(require 'use-package)
+#+end_src
+
+*** Byte-compile init files to speed things
+
+#+begin_src emacs-lisp
+(defun myscope/byte-recompile ()
+  (interactive)
+  (byte-recompile-directory "~/.emacs.d" 0))
+#+end_src
+
+** General configuration
+*** Backups
+
+Don't clutter up directories with backup files, use a directory instead.
+
+#+begin_src emacs-lisp
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+#+end_src
+
+Save alot.
+
+#+begin_src emacs-lisp
+(setq delete-old-versions -1)
+(setq version-control t)
+(setq vc-make-backup-files t)
+(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+#+end_src
+
+*** Buffer
+
+kill all other buffers
+#+begin_src emacs-lisp
+(defun kill-other-buffers ()
+  "Kill all buffers but the current one. Don't mess with special buffers."
+  (interactive)
+  (dolist (buffer (buffer-list))
+    (unless (or (eql buffer (current-buffer)) (not (buffer-file-name buffer)))
+      (kill-buffer buffer))))
+#+end_src
+
+*** Show column number
+
+Show column number on the modeline
+#+begin_src emacs-lisp
+  (column-number-mode 1)
+#+end_src
+
+*** History
+
+Save history.
+
+#+begin_src emacs-lisp
+(setq savehist-file "~/.emacs.d/savehist")
+(savehist-mode 1)
+(setq history-length t)
+(setq history-delete-duplicates t)
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables
+      '(kill-ring
+        search-ring
+        regexp-search-ring))
+#+end_src
+
+*** Windows configuration
+
+Remove menu-, scroll-, toolbars, and tooltip.
+
+#+begin_src emacs-lisp
+(tooltip-mode -1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(global-set-key [f2] 'menu-bar-mode)
+#+end_src
+
+Inhibit startup message
+#+begin_src emacs-lisp
+(setq inhibit-startup-message t)
+#+end_src
+
+*** Winner mode - undo and redo window configuration
+
+Lets us use C-c <left> and C-c <right> to switch between window configurations.
+
+#+begin_src emacs-lisp
+  (use-package winner
+    :ensure winner
+    :config (winner-mode 1))
+#+end_src
+
+*** Helm - interactive completion
+
+Use helm to complete various things. And ido to switch buffers.
+#+begin_src emacs-lisp
+    (use-package helm
+      :ensure helm
+      :diminish helm-mode
+      :init
+      (progn
+        (require 'helm-config)
+        (setq helm-candidate-number-limit 10)
+        (setq helm-idle-delay 0.0
+              helm-input-idle-delay 0.01
+              helm-quick-update t
+              helm-M-x-requires-pattern nil
+              helm-ff-skip-boring-files t)
+        (helm-mode))
+      :config
+      (progn
+        ;; Use switch-to-buffer for history
+        (add-to-list 'helm-completing-read-handlers-alist '(switch-to-buffer . ido)))
+      :bind (("C-c h" . helm-mini)))
+    (ido-mode -1) ;; Turn off ido mode in case I enabled it accidentally
+
+
+#+end_src
+
+Use helm-M-x
+#+begin_src emacs-lisp
+(global-set-key (kbd "M-x") 'helm-M-x)
+#+end_src
+
+*** Change "yes or no" to "y or n"
+
+Use y-n instead of yes-no.
+
+#+begin_src emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+*** Set up a light-on-dark color scheme
+
+Using tango with some minor modifications.
+
+#+begin_src emacs-lisp
+  (defun myfunc/setup-color-theme ()
+    (interactive)
+    (load-theme 'tango-dark t)
+    (set-face-background 'default "black")
+    (set-face-background 'mode-line "gray10")
+    (set-face-foreground 'mode-line "white")
+    (set-face-attribute 'fringe nil :background "black")
+    (add-to-list 'default-frame-alist '(cursor-color . "white"))
+  )
+
+  (use-package color-theme
+    :ensure color-theme
+    :init
+    (myfunc/setup-color-theme))
+#+end_src
+
+#+begin_src emacs-lisp
+  (custom-set-faces
+   '(erc-input-face ((t (:foreground "antique white"))))
+   '(helm-selection ((t (:background "ForestGreen" :foreground "black"))))
+   '(org-agenda-clocking ((t (:inherit secondary-selection :foreground "black"))) t)
+   '(org-agenda-done ((t (:foreground "dim gray" :strike-through nil))))
+   '(org-done ((t (:foreground "PaleGreen" :weight normal :strike-through t))))
+   '(org-clock-overlay ((t (:background "SkyBlue4" :foreground "black"))))
+   '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon" :strike-through t))))
+   '(outline-1 ((t (:inherit font-lock-function-name-face :foreground "cornflower blue")))))
+#+end_src
+
+#+begin_src emacs-lisp
+(add-hook 'eww-mode-hook
+          (lambda () (load-theme-buffer-local 'tango (current-buffer))))
+#+end_src
+
+*** Undo tree mode - visualize your undos and branches
+
+This lets you use C-x u and shows you an undo-tree with different branches.
+
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    :ensure undo-tree
+    :init
+    (progn
+      (global-undo-tree-mode)
+      (setq undo-tree-visualizer-timestamps t)
+      (setq undo-tree-visualizer-diff t)))
+#+end_src
+
+*** Help - which-key
+
+#+begin_src emacs-lisp
+(use-package guide-key
+  :ensure guide-key
+  :init
+  (which-key-mode t))
+#+end_src
+
+*** UTF-8
+#+begin_src emacs-lisp
+(prefer-coding-system 'utf-8)
+(when (display-graphic-p)
+  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+#+end_src
+
+*** Pending delete
+This lets us to delete a region much like a typical text selection outside of Emacs, you can replace the active region just by typing text.
+
+#+begin_src emacs-lisp
+    (delete-selection-mode 1)
+#+end_src
+*** Big files
+
+When openning big files, use fundamental-mode, it makes it alot faster.
+Activate readonly.
+
+#+begin_src emacs-lisp
+(defun my-find-file-check-make-large-file-read-only-hook ()
+  "If a file is over a given size, make the buffer read only."
+  (when (> (buffer-size) (* 1024 1024))
+    (setq buffer-read-only t)
+    (buffer-disable-undo)
+    (fundamental-mode)))
+
+(add-hook 'find-file-hooks 'my-find-file-check-make-large-file-read-only-hook)
+#+end_src
+
+*** Bookmark
+#+begin_src emacs-lisp
+(setq
+  bookmark-default-file "~/.emacs.d/bookmarks"
+  bookmark-save-flag 1)
+#+end_src
+
+** Some Bindings
+
+Disable emacs sleep.
+#+begin_src emacs-lisp
+  (global-unset-key (kbd "C-z"))
+#+end_src
+
+Use hippie-expand.
+#+begin_src emacs-lisp
+(global-set-key (kbd "M-/") 'hippie-expand)
+#+end_src
+
+Taken from starterkit
+#+begin_src emacs-lisp
+  (defun recentf-ido-find-file ()
+    "Find a recent file using Ido."
+    (interactive)
+    (let* ((file-assoc-list
+            (mapcar (lambda (x)
+                      (cons (file-name-nondirectory x)
+                            x))
+                    recentf-list))
+           (filename-list
+            (remove-duplicates (mapcar #'car file-assoc-list)
+                               :test #'string=))
+           (filename (ido-completing-read "Choose recent file: "
+                                          filename-list
+                                          nil
+                                          t)))
+      (when filename
+        (find-file (cdr (assoc filename
+                               file-assoc-list))))))
+#+end_src
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x M-f") 'ido-find-file-other-window)
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (global-set-key (kbd "C-x f") 'recentf-ido-find-file)
+#+end_src
+
+Activate recent files. Can be accessed through recentf-ido-find-file: "C-x f"
+#+begin_src emacs-lisp
+(require 'recentf)
+(setq recentf-max-saved-items 500
+      recentf-max-menu-items 15)
+(recentf-mode +1)
+#+end_src
+
+
+*** Use regex searches by default.
+Use regex by default, and make it easy to query-replace.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-M-s") 'query-replace-regexp)
+#+end_src
+
+Foreign-regex lets us construct regex for other programming envirements. This is very convenient for testing puposes.
+supports: perl, ruby, javascript, python
+-
+example: M-x foreign-regexp/regexp-type/set <RET> perl <RET>
+
+#+begin_src emacs-lisp
+;;  (use-package foreign-regexp
+;;    :ensure foreign-regexp
+;;    :init
+;;    (setq foreign-regexp/regexp-type 'perl)
+;;  )
+#+end_src
+
+*** Join-line
+Even though I rarely use this, it's often handy when constructing macros.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-x ^") 'join-line)
+#+end_src
+
+** Navigation
+*** Narrowing
+Narrow to region: C-x n n
+Narrow to subtree: C-x n s
+To widen the view again: C-x n w
+#+begin_src emacs-lisp
+    (put 'narrow-to-region 'disabled nil)
+#+end_src
+
+*** Pop to mark
+
+After typing C-u C-<SPC> you can type C-<SPC> instead of C-u C-<SPC> to cycle through the mark ring.
+#+begin_src emacs-lisp
+(setq set-mark-command-repeat-pop t)
+#+end_src
+
+*** Text size
+#+begin_src emacs-lisp
+(message "hereher")
+#+end_src
+
+
+#+begin_src emacs-lisp
+(use-package hydra
+    :ensure hydra)
+#+end_src
+
+#+begin_src emacs-lisp
+    (defhydra hydra-zoom (global-map "<f6>")
+      "zoom"
+      ("g" text-scale-increase "in")
+      ("l" text-scale-decrease "out"))
+#+end_src
+
+*** Killing bactwards
+
+Use ctrl+h for delting backwards.
+alt+h for killing words backwrd.
+
+#+begin_src emacs-lisp
+(defun myfunc-delete-region (&optional arg)
+      (interactive "p")
+      (if (region-active-p)
+        (delete-region (region-beginning) (region-end))
+        (delete-char arg)))
+
+;; kill no region
+(defun myfunc-bck-kill-word-or-kill-region (&optional arg)
+  (interactive "p")
+  (if (region-active-p)
+    (kill-region (region-beginning) (region-end))
+    (backward-kill-word arg)))
+
+;; delete with ease
+(global-set-key (kbd "C-h") 'backward-delete-char)
+(global-set-key (kbd "C-d") 'myfunc-delete-region )
+(global-set-key (kbd "M-h") 'myfunc-bck-kill-word-or-kill-region)
+
+;; help
+(global-set-key (kbd "C-S-h") 'help)
+#+end_src
+
+*** Frequently-accessed files
+Registers allow you to jump to a file or other location quickly. To
+jump to a register, use =C-x r j= followed by the letter of the
+register.
+
+#+begin_src emacs-lisp :results silent
+  (mapcar
+   (lambda (r)
+     (set-register (car r) (cons 'file (cdr r))))
+   '((?i . "~/.emacs.d/branduren.org")
+     (?o . "~/documents/org/organizer.org")
+     (?c . "~/documents/org/contacts.org")))
+#+end_src
+
+*** Browse-kill-ring
+Pressing M-y brings up the browse-kill-ring
+
+#+begin_src emacs-lisp
+  (use-package browse-kill-ring
+    :ensure browse-kill-ring
+    :init
+    (progn
+      (browse-kill-ring-default-keybindings)
+      (setq browse-kill-ring-quit-action 'save-and-restore)))
+#+end_src
+
+*** Dired
+
+Toggle dotfile visibilty.
+From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
+#+begin_src emacs-lisp
+  (defun dired-dotfiles-toggle ()
+    "Show/hide dot-files"
+    (interactive)
+    (when (equal major-mode 'dired-mode)
+      (if (or (not (boundp 'dired-dotfiles-show-p)) dired-dotfiles-show-p) ; if currently showing
+    (progn
+      (set (make-local-variable 'dired-dotfiles-show-p) nil)
+      (message "h")
+      (dired-mark-files-regexp "^\\\.")
+      (dired-do-kill-lines))
+  (progn (revert-buffer) ; otherwise just revert to re-show
+         (set (make-local-variable 'dired-dotfiles-show-p) t)))))
+#+end_src
+
+Sometimes I just want to rename a folder, or move it somewhere in the current directory.
+Therefore it's alot easier if I can toggle dired-dwim-target.
+#+begin_src emacs-lisp
+(setq dired-dwim-target t)
+(defun toggle-dired-dwim-target()
+  "Toggle-dired-dwim-target"
+  (interactive)
+  (if (eq dired-dwim-target t)
+        (progn
+          (setq dired-dwim-target nil)
+          (message "dired-dwim-target nil"))
+        (progn
+          (setq dired-dwim-target t)
+          (message "dired-dwim-target t"))))
+
+(define-key dired-mode-map (kbd "C-,") 'toggle-dired-dwim-target)
+#+end_src
+
+*** Openwith
+#+begin_src emacs-lisp
+(use-package openwith
+    :ensure openwith)
+
+(setq large-file-warning-threshold 9500000000)
+
+(setq openwith-associations
+      (list (list (openwith-make-extension-regexp '("pdf"))
+                  "evince" '(file))
+            (list (openwith-make-extension-regexp '("flac" "mp3" "wav"))
+                  "vlc" '(file))
+            (list (openwith-make-extension-regexp '("avi" "flv" "mov" "mp4"
+                                                    "mpeg" "mpg" "ogg" "wmv"))
+                  "vlc" '(file))
+            (list (openwith-make-extension-regexp '("rar" "part"))
+                  "vlc" '(file))
+            (list (openwith-make-extension-regexp '("bmp" "jpeg" "jpg" "JPG" "png"))
+                  "ristretto" '(file))
+            (list (openwith-make-extension-regexp '("doc" "docx" "odt"))
+                  "libreoffice" '("--writer" file))
+            (list (openwith-make-extension-regexp '("ods" "xls" "xlsx"))
+                  "libreoffice" '("--calc" file))
+            (list (openwith-make-extension-regexp '("odp" "pps" "ppt" "pptx"))
+                  "libreoffice" '("--impress" file))
+            ))
+(openwith-mode t)
+#+end_src
+
+** Basic editing
+*** cycle spaceing
+Makes it easy to toggle between how many spacing.
+#+begin_src emacs-lisp
+(global-set-key (kbd "M-SPC") 'cycle-spacing)
+#+end_src
+
+*** Transpose
+#+begin_src emacs-lisp
+;; Transpose stuff with M-t
+(bind-key "M-t" nil) ;; which used to be transpose-words
+(bind-key "M-t l" 'transpose-lines)
+(bind-key "M-t w" 'transpose-words)
+(bind-key "M-t t" 'transpose-words)
+(bind-key "M-t M-t" 'transpose-words)
+(bind-key "M-t s" 'transpose-sexps)
+#+end_src
+
+*** Auto complete
+#+begin_src emacs-lisp
+  (myfunc/ensure-package-installed 'auto-complete)
+  (auto-complete-mode t)
+#+end_src
+
+#+begin_src emacs-lisp
+   ;; Completion words longer than 4 characters
+   (myfunc/ensure-package-installed 'ac-ispell)
+   (custom-set-variables
+     '(ac-ispell-requires 4)
+     '(ac-ispell-fuzzy-limit 4))
+
+   (eval-after-load "auto-complete"
+     '(progn
+         (ac-ispell-setup)))
+
+   (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
+   (add-hook 'mail-mode-hook 'ac-ispell-ac-setupa)
+#+end_src
+
+#+begin_src emacs-lisp
+  (myfunc/ensure-package-installed 'auto-complete-c-headers)
+  (require 'auto-complete-c-headers)
+  (add-to-list 'ac-sources 'ac-source-c-headers)
+#+end_src
+
+*** Evil numbers
+Makes it easy to increment numbers and works well with multiple cursors.
+It would be more awesome if it could handle letters as well.
+
+#+begin_src emacs-lisp
+  (myfunc/ensure-package-installed 'evil-numbers)
+  (global-set-key (kbd "C-x +") 'evil-numbers/inc-at-pt)
+  (global-set-key (kbd "C-x -") 'evil-numbers/dec-at-pt)
+#+end_src
+
+*** Indent tools
+Set indentation by analysing buffer.
+
+#+begin_src emacs-lisp
+(use-package dtrt-indent
+  :config (dtrt-indent-mode 1))
+
+(setq indent-tab-setting t)
+#+end_src
+
+** moz test
+When editing web files I often want to update the firefox - this does the job.
+But there should be a better way.
+
+#+begin_src emacs-lisp
+(defun auto-reload-firefox-on-after-save-hook ()
+          (add-hook 'after-save-hook
+                       '(lambda ()
+                          (interactive)
+                          (comint-send-string (inferior-moz-process)
+                                              "setTimeout(BrowserReload(), \"1000\");"))
+                       'append 'local)) ; buffer-local
+
+;; Example - you may want to add hooks for your own modes.
+;; I also add this to python-mode when doing django development.
+(add-hook 'html-mode-hook 'auto-reload-firefox-on-after-save-hook)
+(add-hook 'css-mode-hook 'auto-reload-firefox-on-after-save-hook)
+(add-hook 'web-mode-hook 'auto-reload-firefox-on-after-save-hook)
+#+end_src
+
+
+#+begin_src emacs-lisp
+(defun my-moz-refresh-browser-condition (current-file)
+  "Should return a boolean javascript expression or nil"
+  (let (rlt)
+    (cond
+     ((string-match "\\(beeta\\|cb_tutorial\\)" current-file)
+      (setq rlt "content.document.location.href.indexOf(':8001')!==-1"))
+     (t
+      (setq rlt nil)))
+    rlt))
+
+;; {{ mozrepl auto-refresh browser
+(defun moz-reload-browser ()
+  (interactive)
+  (let (js-cond cmd)
+    (if (fboundp 'my-moz-refresh-browser-condition)
+        (setq js-cond (funcall 'my-moz-refresh-browser-condition (buffer-file-name))))
+    (cond
+     (js-cond
+      (setq cmd (concat "if(" js-cond "){setTimeout(function(){content.document.location.reload(true);}, '500');}")))
+     (t
+      (setq cmd "setTimeout(function(){content.document.location.reload(true);}, '500');")))
+    (comint-send-string (inferior-moz-process) cmd)
+    ))
+
+(defun moz-after-save ()
+  (interactive)
+  (when (memq major-mode '(web-mode html-mode nxml-mode nxhml-mode php-mode))
+    (moz-reload-browser)))
+
+(add-hook 'after-save-hook
+              'moz-after-save
+              'append 'local)
+;; }}
+#+end_src
+
+
+** Basic editing
+*** eval and replace
+Makes it easy to eval lisp in what ever mode I'm in.
+See it in action here: http://emacsrocks.com/e13.html
+
+#+begin_src emacs-lisp
+  (defun eval-and-replace ()
+    "Replace the preceding sexp with its value."
+    (interactive)
+    (backward-kill-sexp)
+    (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+        (current-buffer))
+      (error (message "Invalid expression")
+      (insert (current-kill 0)))))
+
+  (bind-key "C-x C-u" 'eval-and-replace)
+#+end_src
+
+** Correction ispell
+
+Kevin Atkinson road map for aspell:
+@see http://lists.gnu.org/archive/html/aspell-announce/2011-09/msg00000.html
+
+#+begin_src emacs-lisp
+(defun flyspell-detect-ispell-args (&optional RUN-TOGETHER)
+  "if RUN-TOGETHER is true, spell check the CamelCase words"
+  (let (args)
+    (cond
+     ((string-match "aspell$" ispell-program-name)
+      ;; force the English dictionary, support Camel Case spelling check (tested with aspell 0.6)
+      (setq args (list "--sug-mode=ultra" "--lang=en_US"))
+      (if RUN-TOGETHER
+          (setq args (append args '("--run-together" "--run-together-limit=5" "--run-together-min=2")))))
+     ((string-match "hunspell$" ispell-program-name)
+      (setq args nil)))
+    args
+    ))
+
+(cond
+ ((executable-find "aspell")
+  (setq ispell-program-name "aspell"))
+ ((executable-find "hunspell")
+  (setq ispell-program-name "hunspell")
+  ;; just reset dictionary to the safe one "en_US" for hunspell.
+  ;; if we need use different dictionary, we specify it in command line arguments
+  (setq ispell-local-dictionary "en_US")
+  (setq ispell-local-dictionary-alist
+        '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8))))
+ (t (setq ispell-program-name nil)))
+
+;; ispell-cmd-args is useless, it's the list of *extra* arguments we will append to the ispell process when "ispell-word" is called.
+;; ispell-extra-args is the command arguments which will *always* be used when start ispell process
+(setq ispell-extra-args (flyspell-detect-ispell-args t))
+;; (setq ispell-cmd-args (flyspell-detect-ispell-args))
+(defadvice ispell-word (around my-ispell-word activate)
+  (let ((old-ispell-extra-args ispell-extra-args))
+    (ispell-kill-ispell t)
+    (setq ispell-extra-args (flyspell-detect-ispell-args))
+    ad-do-it
+    (setq ispell-extra-args old-ispell-extra-args)
+    (ispell-kill-ispell t)
+    ))
+#+end_src
+
+Guess the language(Faroese, English, Danish) Im using from the content.
+
+#+begin_src emacs-lisp
+    (defvar guess-language-rules
+      '(("english" . "\\<\\(of\\|the\\|and\\|or\\|how\\)\\>")
+        ("dansk" . "\\<\\(af\\|de[nt]\\|e[nr]\\|for\\|han\\|i\\|ikke\\|jeg\\|med\\|på\\|til\\|var\\|\\w*[ÆØÅÉæøåé]\\w*\\)\\>")
+        ("føroyskt" . "\\<\\(\\w*[ÆØÁÓÚÝÐæøáóúíð]\\w*\\|hetta\\|eg\\)\\>"))
+
+      "Alist of rules to determine the language of some text.
+    Each rule has the form (CODE . REGEXP) where CODE is a string to
+    identify the language (probably according to ISO 639), and REGEXP is a
+    regexp that matches some very common words particular to that language.
+    The default language should be listed first.  That will be the language
+    returned when no REGEXP matches, as would happen for an empty
+    document.")
+
+    (defun guess-buffer-language ()
+      "Guess language in the current buffer."
+      (save-excursion
+        (goto-char (point-min))
+        (let ((count (map 'list (lambda (x)
+                                  (cons (count-matches (cdr x)) (car x)))
+                          guess-language-rules)))
+          (cdr (assoc (car (sort (map 'list 'car count) '>))
+                      count))
+)))
+
+  (defun guess-language ()
+      "Guess language in the current buffer."
+      (interactive)
+      (let ((lang (guess-buffer-language)))
+        (ispell-change-dictionary lang)
+        (flyspell-buffer)
+        (message lang)))
+
+  (defun guess-language ()
+      "Guess language in the current buffer."
+      (interactive)
+      (message (guess-buffer-language)))
+#+end_src
+
+#+begin_src emacs-lisp
+    (let ((langs '("english" "dansk" "føroyskt")))
+      (setq lang-ring (make-ring (length langs)))
+      (dolist (elem langs) (ring-insert lang-ring elem)))
+
+    (defun cycle-ispell-languages ()
+      (interactive)
+      (let ((lang (ring-ref lang-ring -1)))
+        (ring-insert lang-ring lang)
+        (ispell-change-dictionary lang)
+        (flyspell-buffer)
+        (message lang
+)))
+
+
+(defun flyspell-check-next-highlighted-word ()
+  "Custom function to spell check next highlighted word"
+  (interactive)
+  (flyspell-goto-next-error)
+  (ispell-word)
+  )
+
+;(global-set-key '[(f7)] 'flyspell-check-next-highlighted-word)
+(global-set-key '[(f7)] 'ispell-message)
+(global-set-key '[(C-f7)] 'guess-language)
+(global-set-key '[(S-f7)] 'cycle-ispell-languages)
+(global-set-key '[(M-f7)] 'flyspell-mode)
+
+(setq flyspell-issue-message-flag t)
+#+end_src
+
+** Reading
+
+https://github.com/xahlee/xah_emacs_init/blob/master/xah_emacs_font.el
+From Xah Lee:
+
+#+begin_src emacs-lisp
+(defun xah-toggle-margin-right ()
+  "Toggle the right margin between `fill-column' or window width.
+This command is convenient when reading novel, documentation."
+  (interactive)
+  (if (eq (cdr (window-margins)) nil)
+      (set-window-margins nil 0 (- (window-body-width) fill-column))
+    (set-window-margins nil 0 0)))
+#+end_src
+
+** Paradox setting
+
+#+begin_src emacs-lisp
+  (setq paradox-github-token 'AddTokenHere)
+#+end_src
+
+** Org
+*** Open by default
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook
+      '(lambda ()
+         (setq org-file-apps
+           '((auto-mode . emacs)
+             ("\\.mm\\'" . default)
+             ("\\.x?html?\\'" . "xdg-open %s")
+             ("\\.pdf\\'" . "evince %s")))))
+#+end_src
+
+*** Modules
+
+Contrib modules are quite useful but I'm only using org-contacts at the moment.
+This makes it easy to save your contact in an org-file... and using it when sending emails.
+#+begin_src emacs-lisp
+ (require 'org-contacts)
+ ;(require 'org-drill)
+ ;(require 'org-notify)
+ ;(org-notify-start)
+#+end_src
+
+*** Images
+Lets me display math formulas directly in the org-buffer
+#+begin_src emacs-lisp
+(setq org-latex-create-formula-image-program 'dvipng)
+#+end_src
+
+*** Keyboard shortcuts
+#+begin_src emacs-lisp
+      (bind-key "C-c r" 'org-capture)
+      (bind-key "C-c a" 'org-agenda)
+      (bind-key "C-c l" 'org-store-link)
+      (bind-key "C-c L" 'org-insert-link-global)
+      (bind-key "C-c O" 'org-open-at-point-global)
+      (bind-key "<f9> <f9>" 'org-agenda-list)
+      (bind-key "<f9> <f8>" (lambda () (interactive) (org-capture nil "r")))
+      (bind-key "C-TAB" 'org-cycle org-mode-map)
+      (bind-key "C-c v" 'org-show-todo-tree org-mode-map)
+      (bind-key "C-c C-r" 'org-refile org-mode-map)
+      (bind-key "C-c R" 'org-reveal org-mode-map)
+      (bind-key "C-M-p" 'org-metaup)
+      (bind-key "C-M-n" 'org-metadown)
+#+end_src
+
+Append-next-kill when you want to append to previous kill
+#+begin_src emacs-lisp
+  (eval-after-load 'org
+    '(progn
+       (bind-key "C-M-w" 'append-next-kill org-mode-map)))
+#+end_src
+
+*** Navigation
+
+From http://stackoverflow.com/questions/15011703/is-there-an-emacs-org-mode-command-to-jump-to-an-org-heading
+#+begin_src emacs-lisp
+  (setq org-goto-interface 'outline
+        org-goto-max-level 10)
+  (require 'imenu)
+  (bind-key "M-n" 'imenu)
+  (bind-key "C-c j" 'org-clock-goto) ;; jump to current task from anywhere
+  (bind-key "C-c C-w" 'org-refile)
+  (setq org-cycle-include-plain-lists 'integrate)
+#+end_src
+
+*** Taking notes
+
+org directory, which is actually a symlink to a directory to dropbox folder.
+#+begin_src emacs-lisp
+  (setq org-directory "~/documents/org")
+  (setq org-default-notes-file "~/documents/org/organizer.org")
+#+end_src
+
+**** Templates
+
+Org-capture teblpates
+
+#+begin_src emacs-lisp
+  (defvar myfunc/org-basic-task-template "* TODO %^{Task}
+  SCHEDULED: %^t
+  %?
+  :PROPERTIES:
+  :Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+  :END:" "Basic task data")
+  (setq org-capture-templates
+        `(("t" "Tasks" entry
+           (file+headline "~/documents/org/organizer.org" "Tasks Private")
+           ,myfunc/org-basic-task-template)
+          ("s" "Speedy note" item
+           (file+headline "~/documents/org/organizer.org" "Quick notes"))
+          ("c" "Contact" entry (file "~/documents/org/contacts.org")
+            "* %(org-contacts-template-name)
+  :PROPERTIES:
+  :EMAIL: %(org-contacts-template-email)
+  :END:")
+           ("n" "Daily note" table-line (file+olp "~/documents/org/organizer.org" "Daily notes")
+            "| %u | %^{Note} |"
+            :immediate-finish)
+           ("r" "Notes" entry
+            (file+datetree "~/documents/org/organizer.org")
+            "* %?\n\n%i\n"
+            )))
+  (bind-key "C-M-r" 'org-capture)
+#+end_src
+
+**** Refiling
+Organize notes by typing in the headline to file them under.
+#+begin_src emacs-lisp
+      (setq org-reverse-note-order t)
+      (setq org-refile-use-outline-path nil)
+      (setq org-refile-allow-creating-parent-nodes 'confirm)
+      (setq org-refile-use-cache nil)
+      (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+      (setq org-blank-before-new-entry nil)
+#+end_src
+
+**** Track time
+
+#+begin_src emacs-lisp
+  (setq org-clock-idle-time nil)
+  (setq org-log-done 'time)
+  (setq org-clock-persist t)
+  (org-clock-persistence-insinuate)
+  (setq org-clock-report-include-clocking-task t)
+  (defadvice org-clock-in (after myfunc activate)
+    "Mark STARTED when clocked in."
+    (save-excursion
+      (catch 'exit
+        (cond
+         ((derived-mode-p 'org-agenda-mode)
+          (let* ((marker (or (org-get-at-bol 'org-marker)
+                             (org-agenda-error)))
+                 (hdmarker (or (org-get-at-bol 'org-hd-marker) marker))
+                 (pos (marker-position marker))
+                 (col (current-column))
+                 newhead)
+            (org-with-remote-undo (marker-buffer marker)
+              (with-current-buffer (marker-buffer marker)
+                (widen)
+                (goto-char pos)
+                (org-back-to-heading t)
+                (if (org-get-todo-state)
+                    (org-todo "STARTED"))))))
+         (t (if (org-get-todo-state)
+                    (org-todo "STARTED")))))))
+#+end_src
+
+Too many clock entries clutter up a heading.
+
+#+begin_src emacs-lisp
+(setq org-log-into-drawer "LOGBOOK")
+(setq org-clock-into-drawer 1)
+#+end_src
+
+*** Estimating tasks
+
+From "Add an effort estimate on the fly when clocking in" on the
+[[http://orgmode.org/worg/org-hacks.html][Org Hacks]] page:
+
+#+begin_src emacs-lisp
+(add-hook 'org-clock-in-prepare-hook
+          'myfunc/org-mode-ask-effort)
+
+(defun myfunc/org-mode-ask-effort ()
+  "Ask for an effort estimate when clocking in."
+  (unless (org-entry-get (point) "Effort")
+    (let ((effort
+           (completing-read
+            "Effort: "
+            (org-entry-get-multivalued-property (point) "Effort"))))
+
+      (unless (equal effort "")
+        (org-set-property "Effort" effort)))))
+#+end_src
+
+# <<subset>>
+
+*** Org agenda
+**** Basic configuration
+Only use my main orgfile for the agenda items and TODOs. It makes it faster for scanning.
+
+#+begin_src emacs-lisp
+  (setq org-agenda-files
+    (delq nil
+      (mapcar (lambda (x) (and (file-exists-p x) x))
+         '("~/documents/org/organizer.org"
+   ))))
+
+#+end_src
+
+*** Cut subtree
+Cut subtrees.
+
+#+begin_src emacs-lisp
+      (eval-after-load 'org
+        '(progn
+           (bind-key "C-c k" 'org-cut-subtree org-mode-map)
+           (setq org-yank-adjusted-subtrees t)))
+#+end_src
+
+*** Structure templates
+
+Template for org-mode. It makes it super speedy for creating templates.
+example: type <s[tab].
+
+#+begin_src emacs-lisp
+  (setq org-structure-template-alist
+        '(("s" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>")
+          ("e" "#+begin_example\n?\n#+end_example" "<example>\n?\n</example>")
+          ("q" "#+begin_quote\n?\n#+end_quote" "<quote>\n?\n</quote>")
+          ("v" "#+BEGIN_VERSE\n?\n#+END_VERSE" "<verse>\n?\n</verse>")
+          ("c" "#+BEGIN_COMMENT\n?\n#+END_COMMENT")
+          ("l" "#+begin_src emacs-lisp\n?\n#+end_src" "<src lang=\"emacs-lisp\">\n?\n</src>")
+          ("L" "#+latex: " "<literal style=\"latex\">?</literal>")
+          ("h" "#+begin_html\n?\n#+end_html" "<literal style=\"html\">\n?\n</literal>")
+          ("H" "#+html: " "<literal style=\"html\">?</literal>")
+          ("a" "#+begin_ascii\n?\n#+end_ascii")
+          ("A" "#+ascii: ")
+          ("i" "#+index: ?" "#+index: ?")
+          ("I" "#+include %file ?" "<include file=%file markup=\"?\">")))
+#+end_src
+*** Speed commands
+
+Speed commands, when the cursor is at the beginning of a headline, i.e., before the first star
+
+#+begin_src emacs-lisp
+(setq org-use-effective-time t)
+(setq org-use-speed-commands t)
+(add-to-list 'org-speed-commands-user '("x" org-todo "DONE"))
+(add-to-list 'org-speed-commands-user '("y" org-todo-yesterday "DONE"))
+(add-to-list 'org-speed-commands-user '("s" call-interactively 'org-schedule))
+(add-to-list 'org-speed-commands-user '("i" call-interactively 'org-clock-in))
+(add-to-list 'org-speed-commands-user '("o" call-interactively 'org-clock-out))
+#+end_src
+
+*** Diagrams and graphics
+
+#+begin_src emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((C . t)
+     (R . t)
+     (python . t)
+     (sh . t)
+     (gnuplot . t)
+  ))
+#+end_src
+
+*** Presentations
+#+begin_src emacs-lisp
+(use-package ox-reveal
+    :ensure ox-reveal
+)
+(setq org-reveal-root "file:///srv/http/reveal/")
+  (use-package org-present
+    :ensure org-present
+  )
+#+end_src
+
+*** org-present
+#+begin_src emacs-lisp
+;;  (add-to-list 'load-path "~/path/to/org-present")
+  (autoload 'org-present "org-present" nil t)
+
+  (add-hook 'org-present-mode-hook
+            (lambda ()
+              (org-present-big)
+              (org-display-inline-images)))
+
+  (add-hook 'org-present-mode-quit-hook
+            (lambda ()
+              (org-present-small)
+              (org-remove-inline-images)))
+#+end_src
+
+** Scrum
+#+begin_src emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/elpa/emacs-scrum")
+(load "scrum.el" nil t t)
+#+end_src
+
+** Coding
+*** Tab width of 2 is compact and readable
+#+begin_src emacs-lisp
+    (setq-default tab-width 2)
+#+end_src
+*** New lines are always indented
+
+I almost always want to go to the right indentation on the next line.
+#+begin_src emacs-lisp
+(global-set-key (kbd "RET") 'newline-and-indent)
+#+end_src
+
+*** Expand region
+
+Sadly I hardly ever use this, but its too awesome to through away - emacsrocks.
+used to have it bound to C-. but it was replaced with ace-jump-char-mode.
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :ensure expand-region)
+#+end_src
+
+*** Snippets
+
+#+begin_src emacs-lisp
+(use-package yasnippet
+     :ensure yasnippet
+     :init
+     (add-hook 'web-mode-hook #'(lambda () (yas-activate-extra-mode 'html-mode 'php-mode)))
+     (yas-global-mode 1)
+     (yas-load-directory "~/.emacs.d/snippets/"))
+
+(use-package helm-c-yasnippet
+     :ensure helm-c-yasnippet
+     :init
+     (global-set-key (kbd "C-c y") 'helm-yas-complete))
+
+
+;; If i'm not reloading, there will be no snippets for webmode. Must be a better way.
+(yas-reload-all 1)
+
+(add-hook 'term-mode-hook (lambda () (yas-minor-mode -1)))
+#+end_src
+
+*** Don't show whitespace in diff, but show context
+#+begin_src emacs-lisp
+    (setq vc-diff-switches '("-b" "-B" "-u"))
+#+end_src
+*** Magit - nice git interface
+
+Best interface for git - ever.
+
+#+begin_src emacs-lisp
+(use-package magit
+    :ensure magit
+    :bind (("C-x g" . magit-status))
+)
+#+end_src
+
+*** Projects, projectile
+
+#+begin_src emacs-lisp
+(use-package projectile
+  :ensure projectile
+  :init
+  (progn
+    (projectile-global-mode)
+    (setq projectile-enable-caching t)))
+
+(use-package helm-projectile
+    :ensure helm-projectile
+)
+;;(setq projectile-keymap-prefix (kbd "C-c p"))
+(global-set-key (kbd "C-c f") 'helm-projectile-find-file)
+#+end_src
+
+*** Web-mode
+
+Indentation
+#+begin_src emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+end_src
+
+#+begin_src emacs-lisp
+    (myfunc/ensure-package-installed '(web-mode))
+
+    (defun my-setup-php ()
+      ;; enable web mode
+      (web-mode)
+
+      ;; make these variables local
+      (make-local-variable 'web-mode-code-indent-offset)
+      (make-local-variable 'web-mode-markup-indent-offset)
+      (make-local-variable 'web-mode-css-indent-offset)
+
+      ;; set indentation, can set different indentation level for different code type
+      (setq web-mode-code-indent-offset 9)
+      (setq web-mode-css-indent-offset 2)
+      (setq web-mode-markup-indent-offset 2))
+
+
+    (add-to-list 'auto-mode-alist '("\\.php$" . my-setup-php))
+
+#+end_src
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
+#+end_src
+
+** Database
+
+#+b_src emacs-lisp
+(seql-postgres-login-params
+   '((user :default "postgres")
+    (database :default "postgres")
+    (server :default "localhost")
+    (port :default 5432)))
+
+(adok 'sql-interactive-mode-hook
+      (lambda ()
+        (toggle-truncate-lines t)))
+
+;;;ver list
+(seql-connection-alist
+   ((dev.partner (sql-product 'mysql)
+              (sql-port 54321)
+              (sql-server "localhost")
+              (sql-user "demo")
+              (sql-database "wwviews"))
+    (bgmon.dev (sql-product 'postgres)
+              (sql-port 5432)
+              (sql-server "localhost")
+              (sql-user "bgmon")
+              (sql-database "bgmon"))
+    (raffle.dev (sql-product 'postgres)
+                  (sql-port 5432)
+                  (sql-server "localhost")
+                  (sql-user "postgres")
+                  (sql-database "raffle_dev"))))
+
+(desql/sql-connect-server (connection)
+  "ect to the input server using tmtxt/sql-servers-list"
+  (ractive
+   m-comp-read "Select server: " (mapcar (lambda (item)
+                                           (list
+                                            (symbol-name (nth 0 item))
+                                            (nth 0 item)))
+                                         sql-connection-alist)))
+  ;password
+  (ire 'my-password "~/.emacs.d/dbpass.el.gpg")
+  ;the sql connection info and product from the sql-connection-alist
+  ( ((connection-info (assoc connection sql-connection-alist))
+     (connection-product (nth 1 (nth 1 (assoc 'sql-product connection-info))))
+     (sql-password (nth 1 (assoc connection my-sql-password))))
+   delete the connection info from the sql-connection-alist
+   tq sql-connection-alist (assq-delete-all connection sql-connection-alist))
+   delete the old password from the connection-info
+   tq connection-info (assq-delete-all 'sql-password connection-info))
+   add the password to the connection-info
+   onc connection-info `((sql-password ,sql-password)))
+   add back the connection info to the beginning of sql-connection-alist
+   (last used server will appear first for the next prompt)
+   d-to-list 'sql-connection-alist connection-info)
+   override the sql-product by the product of this connection
+   tq sql-product connection-product)
+   connect
+    current-prefix-arg
+    (sql-connect connection connection)
+   sql-connect connection))))
+
+#+erc
+
+#+RTS:
+: sql-connect-server
+
+** Elixir
+*** setup
+
+#+b_src emacs-lisp
+;;U different shell command for mix.
+(selchemist-mix-command "/usr/bin/mix")
+
+;;U different task for running tests.
+(selchemist-mix-test-task "espec")
+
+;;Uustom mix test task options.
+(selchemist-mix-test-default-options '()) ;; default
+
+;;U different environment variable in which mix tasks will run.
+(selchemist-mix-env "prod")
+#+erc
+
+iex
+
+#+b_src emacs-lisp
+;;U different shell command for iex.
+(selchemist-iex-program-name "/usr/bin/iex") ;; default: iex
+
+#+erc
+
+***cute setup
+
+#+b_src emacs-lisp
+;; a different shell command for elixir.
+(selchemist-execute-command "/usr/bin/elixir") ;; default: elixir
+
+#+erc
+
+***pile setup
+
+#+b_src emacs-lisp
+;; a different shell command for elixirc.
+(selchemist-compile-command "/usr/bin/elixirc") ;; default: elixirc
+
+#+erc
+
+***eline setup
+
+#+b_src emacs-lisp
+;; ble the change of the modeline color with the last test run status.
+(selchemist-test-status-modeline nil)
+
+#+erc
+
+***bindings
+
+#+b_src emacs-lisp
+;;U different keybinding prefix than C-c a
+(selchemist-key-command-prefix (kbd "C-,")) ;; default: (kbd "C-c a")
+#+erc
+
+***ting Mode
+
+#+b_src emacs-lisp
+;; ble the use of a more significant syntax highlighting on functions like test, assert_* and refute_*
+(selchemist-test-mode-highlight-tests nil) ;; default t
+
+;; t ask to save changed file buffers before running tests.
+(selchemist-test-ask-about-save nil)
+
+;; t change the color of the mode-name when test run failed or passed.
+(selchemist-test-status-modeline nil)
+
+;;Scompilation output in test report.
+(selchemist-test-display-compilation-output t)
+
+#+erc
+
+***ks
+#+b_src emacs-lisp
+;; the whole test suite with alchemist-mix-test after saving a buffer.
+(selchemist-hooks-test-on-save t)
+
+#+erc
+
+** Tramp
+
+Add proxychains support to tramp methods. This requires that you have proxychains installed on the system. But basicly lets me connect to systems through tor.
+
+#+begin_src emacs-lisp
+(add-to-list 'tramp-methods ' ("proxychains-ssh"
+  (tramp-login-program "proxychains ssh")
+  (tramp-login-args
+   (("-l" "%u")
+    ("-p" "%p")
+    ("%c")
+    ("-e" "none")
+    ("%h")))
+  (tramp-async-args
+   (("-q")))
+  (tramp-remote-shell "/bin/sh")
+  (tramp-remote-shell-args
+   ("-c"))
+  (tramp-gw-args
+   (("-o" "GlobalKnownHostsFile=/dev/null")
+    ("-o" "UserKnownHostsFile=/dev/null")
+    ("-o" "StrictHostKeyChecking=no")))
+  (tramp-default-port 22)))
+#+end_src
+
+** Advanced stuff / things I tend to forget about
+*** Editing multiple things
+**** Multiple cursors mode
+Select region C-* and bang, I got a cursor for each identical region. This mode really makes me happy.
+
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :ensure multiple-cursors
+    :diminish multiple-cursors
+    :bind
+     (("C->" . mc/mark-next-like-this)
+      ("C-<" . mc/mark-previous-like-this)
+      ("C-*" . mc/mark-all-like-this)))
+#+end_src
+
+**** All                    :drill:
+Makes it easy to find and edit all lines matching a given regexp.
+
+#+begin_src emacs-lisp
+(use-package all
+    :ensure all
+)
+#+end_src
+
+*** Ace Jump mode
+
+ace-jump mode
+
+#+begin_src emacs-lisp
+(use-package ace-jump-mode
+  :ensure ace-jump-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(add-hook 'ace-jump-mode-before-jump-hook
+             (lambda () (push-mark (point) t)))
+#+end_src
+
+Lets me jump to a specific char anywhere on the screen three key strokes. C-\. [char] [the char value on screen]
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-\.") 'ace-jump-char-mode)
+#+end_src
+
+** Web browsing
+*** set browser
+
+I used to use conkeror and still do sometime, it makes me use my emacs-fu in the browser.
+But the development in the project is going too slow, but I will leave it in here to check up later.
+#+begin_src emacs-lisp
+(setq browse-url-generic-program (executable-find "/usr/bin/firefox-developer"))
+;(setq browse-url-generic-program (executable-find "/usr/bin/conkeror"))
+(setq browse-url-browser-function 'browse-url-generic)
+#+end_src
+
+*** eww
+I use eww in read my HTML'ified email.
+Remove the default, annoying, gray background on 80% of the webpages.
+#+begin_src emacs-lisp
+(setq shr-color-visible-luminance-min 100)
+#+end_src
+
+** Startup buffers
+#+begin_src emacs-lisp
+     (find-file "~/documents/org/organizer.org")
+#+end_src
+
+** ESS
+#+begin_src emacs-lisp
+  (myfunc/ensure-package-installed '(ess-R-data-view
+                                        ess-R-object-popup
+                                        ess-smart-underscore))
+  (use-package ess-site
+    :ensure ess
+    :init
+    (progn
+      (require 'ess-site)
+      (add-hook 'R-mode-hook 'auto-complete-mode)
+      (setq ess-use-auto-complete 'script-only)
+    ))
+
+(set-face-attribute 'ac-candidate-face nil   :background "#00222c" :foreground "light gray")
+(set-face-attribute 'ac-selection-face nil   :background "SteelBlue4" :foreground "white")
+(set-face-attribute 'popup-tip-face    nil   :background "#003A4E" :foreground "light gray")
+#+end_src
+
+#+begin_src emacs-lisp :eval no :tangle no
+;; start R in current working directory, don't let R ask user
+(setq ess-ask-for-ess-directory t)
+
+;; ESS 13.05 default C-Ret conflicts with CUA mode rectangular selection.
+;; Change shortcut to use Shift-Return
+(define-key ess-mode-map [(control return)] nil)
+(define-key ess-mode-map [(shift return)] 'ess-eval-region-or-line-and-step)
+
+;; If you want all help buffers to go into one frame do:
+;(setq ess-help-own-frame 'one)
+
+;; I want the *R* process in its own frame
+(setq inferior-ess-own-frame t)
+#+end_src
+
+** Major modes
+
+*** Twittering-mode
+#+begin_src emacs-lisp
+(use-package twittering-mode
+  :ensure twittering-mode
+  :init
+  (setq twittering-use-master-password t
+        twittering-icon-mode t )
+
+)
+#+end_src
+*** hyde
+Mode for jekyll blogs.
+
+#+begin_src emacs-lisp
+(use-package hyde
+  :ensure hyde
+)
+#+end_src
+
+*** ERC - Internet Relay Chat
+
+#+begin_src emacs-lisp
+  (erc-spelling-mode 1)
+  (erc-scrolltobottom-mode 1)
+  (setq erc-spelling-dictionaries '(("irc.freenode.net:6667" "english")
+                                    ("irc.dal.net:6667" "føroyskt")
+                                    ("#faroese" "fo")
+                                    ("#faroese_chat" "fo")))
+#+end_src
+
+#+begin_src emacs-lisp
+(myfunc/ensure-package-installed 'erc-hl-nicks)
+(use-package erc-hl-nicks
+   :ensure erc-hl-nicks
+)
+(erc-hl-nicks-mode 1)
+#+end_src
+
+#+begin_src emacs-lisp
+(myfunc/ensure-package-installed 'helm-emmet)
+(use-package helm-emmet
+   :ensure helm-emmet
+)
+#+end_src
+
+#+begin_src emacs-lisp
+;    (erc-tls :server "punch.dal.net" :port 6697 :nick "groyn")
+#+end_src
+
+#+begin_src emacs-lisp
+ (add-hook 'erc-server-376-hook
+    '(lambda (&rest args)
+      (keep-alive)))
+
+  ;;; else flood-quit messages if an accidental disconnection occurs, which will annoy people :)
+ (setq erc-auto-reconnect nil)
+
+#+end_src
+
+#+begin_src emacs-lisp
+;timestamp
+(setq erc-timestamp-only-if-changed-flag nil
+      erc-timestamp-format "%H:%M "
+      erc-fill-prefix " "
+      erc-insert-timestamp-function 'erc-insert-timestamp-left)
+(setq erc-hide-timestamps nil)
+
+(setq erc-track-exclude-types '())
+(setq erc-user-full-name "branch")
+
+(erc-autojoin-mode 1)
+(setq erc-autojoin-channels-alist '(("dal.net"
+                                     "#faroese" "#faroese_chat")))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun call-libnotify (matched-type nick msg)
+     (call-process-shell-command (concat "notify-send" " " nick " " msg))
+     (print (call-process-shell-command (concat "notify-send" " " "n" " " msg)))
+     )
+(add-hook 'erc-text-matched-hook 'call-libnotify)
+#+end_src
+
+*** Mu4e
+
+#+begin_src emacs-lisp
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+(require 'mu4e)
+(require 'org-mu4e)
+#+end_src
+
+for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-i-use-eww-as-a-renderer-for-mu4e][stackoverflow]]
+#+begin_src emacs-lisp
+(require 'mu4e-contrib)
+(setq mu4e-html2text-command 'mu4e-shr2text)
+#+end_src
+
+#+begin_src emacs-lisp
+(setq
+  ;; general
+  mu4e-update-interval 300
+  mu4e-maildir       "~/.mail"   ;; top-level Maildir
+  mu4e-sent-messages-behavior 'delete
+  mu4e-update-interval 600
+  message-kill-buffer-on-exit t
+  mu4e-view-show-images t
+  mu4e-image-max-width 800
+  mu4e-use-fancy-chars t
+
+  mu4e-view-prefer-html t
+
+  ;; smtp
+
+;  message-send-mail-function 'smtpmail-send-it
+;  smtpmail-stream-type 'starttls
+
+  ;; keybindings
+  mu4e-maildir-shortcuts
+            '( ("/gmail/INBOX"               . ?i)
+               ("/gmail/[Gmail].Sent Mail"   . ?s)
+               ("/gmail/[Gmail].Trash"       . ?t)
+               ("/gmail/[Gmail].All Mail"    . ?a)
+               ("/tekno/INBOX"            . ?w)
+               ("/tekno/Trash"            . ?f))
+
+  ; attachment dir
+  mu4e-attachment-dir  "~/downloads"
+
+  ; insert sign
+  mu4e-compose-signature-auto-include 't
+)
+#+end_src
+
+#+begin_src emacs-lisp
+(defun choose-msmtp-account ()
+  (if (message-mail-p)
+      (save-excursion
+        (let*
+            ((from (save-restriction
+                     (message-narrow-to-headers)
+                     (message-fetch-field "from")))
+             (account
+              (cond
+               ((string-match "branduren@gmail.com" from) "gmail")
+               ((string-match "boe@tekno.dk" from) "tekno"))))
+          (setq message-sendmail-extra-arguments (list '"-a" account))))))
+(setq message-sendmail-envelope-from 'header)
+(add-hook 'message-send-mail-hook 'choose-msmtp-account)
+;(add-hook 'message-send-mail-hook 'mu4e-multi-smtpmail-set-msmtp-account)
+
+
+;(global-set-key (kbd "C-x m") mu4e-compose-new)
+;(global-set-key (kbd "C-x m") 'mu4e-multi-compose-new)
+#+end_src
+
+#+begin_src emacs-lisp
+
+(setq mu4e-sent-folder "/gmail/[Gmail].Sent Mail"
+      mu4e-drafts-folder "/gmail/[Gmail].Drafts"
+      mu4e-trash-folder "/gmail/[Gmail].Trash"
+)
+
+(defvar my-mu4e-account-alist
+  '(("gmail"
+     (mu4e-sent-folder "/[Gmail].Sent Mail")
+     (mu4e-drafts-folder "/[Gmail].Drafts")
+     (mu4e-trash-folder "/[Gmail].Trash")
+     (user-mail-address "branduren@gmail.com")
+)
+    ("tekno"
+     (mu4e-sent-folder "/sent")
+     (mu4e-drafts-folder "/drafts")
+     (mu4e-trash-folder "/trash")
+     (user-mail-address "boe@tekno.dk")
+)))
+
+#+end_src
+
+#+RESULTS:
+: my-mu4e-account-alist
+
+#+begin_src emacs-lisp
+;; Found here - http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html
+;;
+(defun my-mu4e-set-account ()
+  "Set the account for composing a message."
+  (let* ((account
+          (if mu4e-compose-parent-message
+              (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
+                (string-match "/\\(.*?\\)/" maildir)
+                (match-string 1 maildir))
+            (completing-read (format "Compose with account: (%s) "
+                                     (mapconcat #'(lambda (var) (car var))
+                                                my-mu4e-account-alist "/"))
+                             (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
+                             nil t nil nil (car my-mu4e-account-alist))))
+         (account-vars (cdr (assoc account my-mu4e-account-alist))))
+    (if account-vars
+        (mapc #'(lambda (var)
+                  (set (car var) (cadr var)))
+              account-vars)
+      (error "No email account found"))))
+
+(add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
+
+#+end_src
+
+#+begin_src emacs-lisp
+(setq message-citation-line-format "%N @ %Y-%m-%d %H:%M %Z:\n")
+(setq message-citation-line-function 'message-insert-formatted-citation-line)
+(setq mu4e-view-show-addresses 't)
+
+(setq mu4e-headers-fields
+    '( (:date          .  25)
+       (:flags         .   6)
+       (:from          .  22)
+       (:subject       .  nil)))
+
+(setq mu4e-show-images t)
+
+(when (fboundp 'imagemagick-register-types)
+      (imagemagick-register-types))
+
+(setq mu4e-view-prefer-html t)
+(setq mail-user-agent 'mu4e-user-agent)
+#+end_src
+
+#+begin_src emacs-lisp
+(require 'mu4e-maildirs-extension)
+(mu4e-maildirs-extension)
+
+(global-set-key [f5]  'mu4e)
+#+end_src
+
+** Autocomplete
+
+#+begin_src emacs-lisp
+(add-hook 'after-init-hook 'global-company-mode)
+#+end_src
+
+** Remove trailing whitespace
+#+begin_src emacs-lisp
+     (add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+end_src
+
+** eshell
+Clear buffer
+#+begin_src emacs-lisp
+(defun eshell-clear-buffer ()
+  "Clear terminal"
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (eshell-send-input)))
+(add-hook 'eshell-mode-hook
+      '(lambda()
+          (local-set-key (kbd "C-l") 'eshell-clear-buffer)))
+#+end_src
