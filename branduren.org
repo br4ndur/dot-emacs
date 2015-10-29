@@ -42,23 +42,30 @@ Add package archives
 
 Make install function.
 #+begin_src emacs-lisp
-(defun myfunc/package-install (package)
-    (unless (package-installed-p package)
-      (package-install package)))
-
-(defun myfunc/ensure-package-installed (packages)
-  (if (listp packages)
-    (dolist (package packages)
-      (myfunc/package-install package))
-    (myfunc/package-install packages)))
+;;(defun myfunc/package-install (package)
+;;    (unless (package-installed-p package)
+;;      (package-install package)))
+;;
+;;(defun myfunc/ensure-package-installed (packages)
+;;  (if (listp packages)
+;;    (dolist (package packages)
+;;      (myfunc/package-install package))
+;;    (myfunc/package-install packages)))
 #+end_src
+
+
 
 *** use-package
 
-Load require usepackage
+#+begin_src emacs-lisp
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+#+end_src
+
 
 #+begin_src emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/elpa/org-plus-contrib-20141201")
+(add-to-list 'load-path "~/.emacs.d/org-plus-contrib-20141201/")
 (require 'use-package)
 #+end_src
 
@@ -245,8 +252,8 @@ This lets you use C-x u and shows you an undo-tree with different branches.
 *** Help - which-key
 
 #+begin_src emacs-lisp
-(use-package guide-key
-  :ensure guide-key
+(use-package which-key
+  :ensure which-key
   :init
   (which-key-mode t))
 #+end_src
@@ -539,13 +546,18 @@ Makes it easy to toggle between how many spacing.
 
 *** Auto complete
 #+begin_src emacs-lisp
-  (myfunc/ensure-package-installed 'auto-complete)
-  (auto-complete-mode t)
+(use-package auto-complete
+    :ensure auto-complete
+)
+(auto-complete-mode t)
 #+end_src
 
 #+begin_src emacs-lisp
    ;; Completion words longer than 4 characters
-   (myfunc/ensure-package-installed 'ac-ispell)
+
+   (use-package ac-ispell
+       :ensure ac-ispell
+   )
    (custom-set-variables
      '(ac-ispell-requires 4)
      '(ac-ispell-fuzzy-limit 4))
@@ -559,7 +571,9 @@ Makes it easy to toggle between how many spacing.
 #+end_src
 
 #+begin_src emacs-lisp
-  (myfunc/ensure-package-installed 'auto-complete-c-headers)
+  (use-package auto-complete-c-headers
+    :ensure auto-complete-c-headers
+  )
   (require 'auto-complete-c-headers)
   (add-to-list 'ac-sources 'ac-source-c-headers)
 #+end_src
@@ -569,9 +583,11 @@ Makes it easy to increment numbers and works well with multiple cursors.
 It would be more awesome if it could handle letters as well.
 
 #+begin_src emacs-lisp
-  (myfunc/ensure-package-installed 'evil-numbers)
-  (global-set-key (kbd "C-x +") 'evil-numbers/inc-at-pt)
-  (global-set-key (kbd "C-x -") 'evil-numbers/dec-at-pt)
+(use-package evil-numbers
+    :ensure evil-numbers
+)
+(global-set-key (kbd "C-x +") 'evil-numbers/inc-at-pt)
+(global-set-key (kbd "C-x -") 'evil-numbers/dec-at-pt)
 #+end_src
 
 *** Indent tools
@@ -1078,8 +1094,8 @@ Speed commands, when the cursor is at the beginning of a headline, i.e., before 
 
 ** Scrum
 #+begin_src emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/elpa/emacs-scrum")
-(load "scrum.el" nil t t)
+;(add-to-list 'load-path "~/.emacs.d/elpa/emacs-scrum")
+;(load "scrum.el" nil t t)
 #+end_src
 
 ** Coding
@@ -1165,7 +1181,9 @@ Indentation
 #+end_src
 
 #+begin_src emacs-lisp
-    (myfunc/ensure-package-installed '(web-mode))
+    (use-package web-mode
+        :ensure web-mode
+    )
 
     (defun my-setup-php ()
       ;; enable web mode
@@ -1425,14 +1443,21 @@ Remove the default, annoying, gray background on 80% of the webpages.
 
 ** Startup buffers
 #+begin_src emacs-lisp
-     (find-file "~/documents/org/organizer.org")
+;;     (find-file "~/documents/org/organizer.org")
 #+end_src
 
 ** ESS
 #+begin_src emacs-lisp
-  (myfunc/ensure-package-installed '(ess-R-data-view
-                                        ess-R-object-popup
-                                        ess-smart-underscore))
+(use-package ess-R-data-view
+    :ensure ess-R-data-view
+)
+(use-package ess-R-object-popup
+    :ensure ess-R-object-popup
+)
+(use-package ess-smart-underscore
+    :ensure ess-smart-underscore
+)
+
   (use-package ess-site
     :ensure ess
     :init
@@ -1496,7 +1521,6 @@ Mode for jekyll blogs.
 #+end_src
 
 #+begin_src emacs-lisp
-(myfunc/ensure-package-installed 'erc-hl-nicks)
 (use-package erc-hl-nicks
    :ensure erc-hl-nicks
 )
@@ -1504,7 +1528,6 @@ Mode for jekyll blogs.
 #+end_src
 
 #+begin_src emacs-lisp
-(myfunc/ensure-package-installed 'helm-emmet)
 (use-package helm-emmet
    :ensure helm-emmet
 )
@@ -1553,7 +1576,7 @@ Mode for jekyll blogs.
 #+begin_src emacs-lisp
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 (require 'mu4e)
-(require 'org-mu4e)
+;;(require 'org-mu4e)
 #+end_src
 
 for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-i-use-eww-as-a-renderer-for-mu4e][stackoverflow]]
@@ -1693,13 +1716,18 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
 #+end_src
 
 #+begin_src emacs-lisp
-(require 'mu4e-maildirs-extension)
-(mu4e-maildirs-extension)
+;(require 'mu4e-maildirs-extension)
+;(mu4e-maildirs-extension)
 
 (global-set-key [f5]  'mu4e)
 #+end_src
 
 ** Autocomplete
+#+begin_src emacs-lisp
+(use-package company
+   :ensure company
+)
+#+end_src
 
 #+begin_src emacs-lisp
 (add-hook 'after-init-hook 'global-company-mode)
