@@ -27,7 +27,7 @@ About fix: Somehow kmacro-edit-lossage doesn't work out of the box. It gives "Ke
 (global-set-key (kbd "C-x C-k l") 'kmacro-edit-lossage-mod)
 #+end_src
 
-*** Setup package handeling(handle if use-package isn't installed!!!!)
+*** Setup package handeling
 
 Add package archives
 #+begin_src emacs-lisp
@@ -35,25 +35,11 @@ Add package archives
               '(("gnu"         . "http://elpa.gnu.org/packages/")
                 ("org"         . "http://orgmode.org/elpa/")
                 ("melpa"       . "http://melpa.milkbox.net/packages/")
-;                ("marmalade"   . "http://marmalade-repo.org/packages/")
+                ;;("marmalade"   . "http://marmalade-repo.org/packages/") doesn't seem to work anymore
+                ;; All I get from marmalade is fatal error: The TLS connection was non-properly terminated.
 ))
-        (package-initialize t)
+(package-initialize t)
 #+end_src
-
-Make install function.
-#+begin_src emacs-lisp
-;;(defun myfunc/package-install (package)
-;;    (unless (package-installed-p package)
-;;      (package-install package)))
-;;
-;;(defun myfunc/ensure-package-installed (packages)
-;;  (if (listp packages)
-;;    (dolist (package packages)
-;;      (myfunc/package-install package))
-;;    (myfunc/package-install packages)))
-#+end_src
-
-
 
 *** use-package
 
@@ -1221,7 +1207,7 @@ Indentation
       (lambda ()
         (toggle-truncate-lines t)))
 
-;;;ver list
+;; server list
 (seql-connection-alist
    ((dev.partner (sql-product 'mysql)
               (sql-port 54321)
@@ -1270,9 +1256,6 @@ Indentation
    sql-connect connection))))
 
 #+end_src
-
-#+RTS:
-: sql-connect-server
 
 ** Elixir
 *** setup
@@ -1333,6 +1316,7 @@ Use a different keybinding prefix than
 #+begin_src emacs-lisp
 (setq alchemist-key-command-prefix (kbd "C-,")) ;; default: (kbd "C-c a")
 #+end_src
+
 
 *** Testting Mode
 
