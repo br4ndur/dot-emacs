@@ -1210,7 +1210,7 @@ Indentation
 
 ** Database
 
-#+b_src emacs-lisp
+#+begin emacs-lisp
 (seql-postgres-login-params
    '((user :default "postgres")
     (database :default "postgres")
@@ -1269,7 +1269,7 @@ Indentation
     (sql-connect connection connection)
    sql-connect connection))))
 
-#+erc
+#+end_src
 
 #+RTS:
 : sql-connect-server
@@ -1277,82 +1277,86 @@ Indentation
 ** Elixir
 *** setup
 
-#+b_src emacs-lisp
-;;U different shell command for mix.
-(selchemist-mix-command "/usr/bin/mix")
+#+begin_src emacs-lisp
+  (use-package elixir-mode
+    :ensure elixir-mode)
+  (use-package alchemist
+    :ensure alchemist)
+#+end_src
 
-;;U different task for running tests.
-(selchemist-mix-test-task "espec")
+#+begin_src emacs-lisp
+;;Use a different shell command for mix.
+(setq alchemist-mix-command "/usr/bin/mix")
 
-;;Uustom mix test task options.
-(selchemist-mix-test-default-options '()) ;; default
+;;Use a different task for running tests.
+(setq alchemist-mix-test-task "espec")
 
-;;U different environment variable in which mix tasks will run.
-(selchemist-mix-env "prod")
-#+erc
+;;Use custom mix test task options.
+(setq alchemist-mix-test-default-options '()) ;; default
 
-iex
 
-#+b_src emacs-lisp
-;;U different shell command for iex.
-(selchemist-iex-program-name "/usr/bin/iex") ;; default: iex
+;;Use a different environment variable in which mix tasks will run.
+(setq alchemist-mix-env "prod")
+#+end_src
 
-#+erc
+Use a different shell command for iex.
+#+begin_src emacs-lisp
+(setq alchemist-iex-program-name "/usr/bin/iex") ;; default: iex
+#+end_src
 
-***cute setup
 
-#+b_src emacs-lisp
-;; a different shell command for elixir.
-(selchemist-execute-command "/usr/bin/elixir") ;; default: elixir
+*** Execute setup
 
-#+erc
+Use a different shell command for elixir.
+#+begin_src emacs-lisp
+(setq alchemist-execute-command "/usr/bin/elixir") ;; default: elixir
+#+end_src
 
-***pile setup
+*** Compile setup
 
-#+b_src emacs-lisp
-;; a different shell command for elixirc.
-(selchemist-compile-command "/usr/bin/elixirc") ;; default: elixirc
+Use a different shell command for elixirc.
+#+begin_src emacs-lisp
+(setq alchemist-compile-command "/usr/bin/elixirc") ;; default: elixirc
+#+end_src
 
-#+erc
 
-***eline setup
+*** Modeline setup
 
-#+b_src emacs-lisp
-;; ble the change of the modeline color with the last test run status.
-(selchemist-test-status-modeline nil)
+Disable the change of the modeline color with the last test run status.
+#+begin_src emacs-lisp
+(setq alchemist-test-status-modeline nil)
+#+end_src
 
-#+erc
+*** Bindings
 
-***bindings
+Use a different keybinding prefix than
+#+begin_src emacs-lisp
+(setq alchemist-key-command-prefix (kbd "C-,")) ;; default: (kbd "C-c a")
+#+end_src
 
-#+b_src emacs-lisp
-;;U different keybinding prefix than C-c a
-(selchemist-key-command-prefix (kbd "C-,")) ;; default: (kbd "C-c a")
-#+erc
+*** Testting Mode
 
-***ting Mode
+#+begin_src emacs-lisp
+;; Disable the use of a more significant syntax highlighting on functions like test, assert_* and refute_*
+(setq alchemist-test-mode-highlight-tests nil) ;; default t
 
-#+b_src emacs-lisp
-;; ble the use of a more significant syntax highlighting on functions like test, assert_* and refute_*
-(selchemist-test-mode-highlight-tests nil) ;; default t
+;; Don't ask to save changed file buffers before running tests.
+(setq alchemist-test-ask-about-save nil)
 
-;; t ask to save changed file buffers before running tests.
-(selchemist-test-ask-about-save nil)
+;; Don't change the color of the mode-name when test run failed or passed.
+(setq alchemist-test-status-modeline nil)
 
-;; t change the color of the mode-name when test run failed or passed.
-(selchemist-test-status-modeline nil)
+;; Show compilation output in test report.
+(setq alchemist-test-display-compilation-output t)
 
-;;Scompilation output in test report.
-(selchemist-test-display-compilation-output t)
+#+end_src
 
-#+erc
+*** Hooks
+#+begin_src emacs-lisp
+;; Run the whole test suite with alchemist-mix-test after saving a buffer.
+(setq alchemist-hooks-test-on-save t)
 
-***ks
-#+b_src emacs-lisp
-;; the whole test suite with alchemist-mix-test after saving a buffer.
-(selchemist-hooks-test-on-save t)
-
-#+erc
+#+end_src
 
 ** Tramp
 
