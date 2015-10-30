@@ -1162,13 +1162,32 @@ Best interface for git - ever.
 *** Web-mode
 
 Indentation
+
+
+
 #+begin_src emacs-lisp
-  (setq-default indent-tabs-mode nil)
+(defun myfunc/tag-line-wrap (b e tag)
+  "Tag every line"
+  (interactive "r\nMTag for line: ")
+  (save-restriction
+    (narrow-to-region b e)
+    (save-excursion
+      (goto-char (point-min))
+      (while (< (point) (point-max))
+        (back-to-indentation)
+        (insert (format "<%s>" tag))
+        (end-of-line)
+        (insert (format "</%s>" tag))
+        (forward-line 1)))))
 #+end_src
 
 #+begin_src emacs-lisp
     (use-package web-mode
         :ensure web-mode
+        :config
+        (setq web-mode-enable-css-colorization t)
+        (setq web-mode-enable-current-column-highlight t)
+        (define-key web-mode-map (kbd "C-c w") 'myfunc/tag-line-wrap)
     )
 
     (defun my-setup-php ()
