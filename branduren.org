@@ -581,10 +581,10 @@ Set indentation by analysing buffer.
 
 #+begin_src emacs-lisp
 (use-package dtrt-indent
+  :ensure dtrt-indent
   :config (dtrt-indent-mode 1))
 (setq-default indent-tabs-mode nil)
 #+end_src
-
 ** moz test
 When editing web files I often want to update the firefox - this does the job.
 But there should be a better way.
