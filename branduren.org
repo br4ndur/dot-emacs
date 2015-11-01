@@ -582,8 +582,7 @@ Set indentation by analysing buffer.
 #+begin_src emacs-lisp
 (use-package dtrt-indent
   :config (dtrt-indent-mode 1))
-
-(setq indent-tab-setting t)
+(setq-default indent-tabs-mode nil)
 #+end_src
 
 ** moz test
@@ -1771,9 +1770,27 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
 (add-hook 'after-init-hook 'global-company-mode)
 #+end_src
 
-** Remove trailing whitespace
+** Handle whitespace
+
+Remove trailing whitespace
 #+begin_src emacs-lisp
      (add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+end_src
+
+Whitespace-mode
+#+begin_src emacs-lisp
+(setq whitespace-display-mappings
+  '(
+    (space-mark 32 [183] [46]) ; 32 SPACE [ ], 183 MIDDLE DOT [·], 46 FULL STOP [.]
+    (newline-mark 10 [182 10]) ; 10 LINE FEED
+    (tab-mark 9 [9655 9] [92 9]) ; 9 Tab, 9655 white right-pointing triangle [▷]
+    ))
+
+;; make whitespace-mode use just basic coloring
+(setq whitespace-style (quote
+  ( spaces tabs newline space-mark tab-mark newline-mark)))
+
+   (global-set-key (kbd "C-x w") 'whitespace-mode)
 #+end_src
 
 ** eshell
