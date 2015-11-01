@@ -153,7 +153,7 @@ Use helm to complete various things. And ido to switch buffers.
       :init
       (progn
         (require 'helm-config)
-        (setq helm-candidate-number-limit 10)
+        (setq helm-candidate-number-limit 100)
         (setq helm-idle-delay 0.0
               helm-input-idle-delay 0.01
               helm-quick-update t
