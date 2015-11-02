@@ -360,6 +360,22 @@ Even though I rarely use this, it's often handy when constructing macros.
 #+end_src
 
 ** Navigation
+*** newline above
+
+I've always missed this function in emacs.
+
+#+begin_src emacs-lisp
+(defun myfunc/insert-line-before (times)
+  "Inserts a newline(s) above the line containing the cursor."
+  (interactive "p")
+  (save-excursion
+    (move-beginning-of-line 1)
+    (backward-char) ;;if the cursor is at beginning of line
+    (newline times)))
+
+(global-set-key (kbd "C-S-o") 'myfunc/insert-line-before)
+#+end_src
+
 *** Narrowing
 Narrow to region: C-x n n
 Narrow to subtree: C-x n s
@@ -642,7 +658,6 @@ But there should be a better way.
               'append 'local)
 ;; }}
 #+end_src
-
 
 ** Basic editing
 *** eval and replace
