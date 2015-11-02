@@ -213,7 +213,8 @@ Using tango with some minor modifications.
    '(org-done ((t (:foreground "PaleGreen" :weight normal :strike-through t))))
    '(org-clock-overlay ((t (:background "SkyBlue4" :foreground "black"))))
    '(org-headline-done ((((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon" :strike-through t))))
-   '(outline-1 ((t (:inherit font-lock-function-name-face :foreground "cornflower blue")))))
+   '(outline-1 ((t (:inherit font-lock-function-name-face :foreground "cornflower blue"))))
+   '(mu4e-highlight-face ((t (:background "black" :foreground "white" :weight bold)))))
 #+end_src
 
 #+begin_src emacs-lisp
