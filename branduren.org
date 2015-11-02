@@ -1688,9 +1688,6 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
 
 #+end_src
 
-#+RESULTS:
-: my-mu4e-account-alist
-
 #+begin_src emacs-lisp
 ;; Found here - http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html
 ;;
