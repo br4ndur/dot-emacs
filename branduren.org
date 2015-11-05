@@ -293,6 +293,17 @@ Use hippie-expand.
 (global-set-key (kbd "M-/") 'hippie-expand)
 #+end_src
 
+#+begin_src emacs-lisp
+(defun myfunc-find-file-as-root ()
+  "If the file is not writable by user, edit with root-privileges using tramp/sudo"
+  (interactive)
+  (let ((file (ido-read-file-name "Edit as root: ")))
+    (unless (file-writable-p file)
+      (setq file (concat "/sudo:root@localhost:" file)))
+    (find-file file)))
+(global-set-key (kbd "C-x F") 'myfunc-find-file-as-root)
+#+end_src
+
 Taken from starterkit
 #+begin_src emacs-lisp
   (defun recentf-ido-find-file ()
