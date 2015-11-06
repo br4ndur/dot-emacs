@@ -1754,19 +1754,49 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
        (:from          .  22)
        (:subject       .  nil)))
 
-(setq mu4e-show-images t)
-
 (when (fboundp 'imagemagick-register-types)
       (imagemagick-register-types))
-
-(setq mu4e-view-prefer-html t)
-(setq mail-user-agent 'mu4e-user-agent)
 #+end_src
 
-#+begin_src emacs-lisp
-;(require 'mu4e-maildirs-extension)
-;(mu4e-maildirs-extension)
+Insert work signature and generate html after composing an email.
+It generates one format for plaintext and another for html.
 
+#+begin_src emacs-lisp
+(defun myfunc-read-file (f)
+  (with-temp-buffer
+    (insert-file-contents f)
+    (buffer-substring-no-properties
+       (point-min)
+       (point-max))))
+
+
+(defun myfunc-replace-in-string (what with in)
+  (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+(defun myfunc-mail-with-signature ()
+  "simple wrapper"
+  (interactive)
+  (message-goto-body)
+  (let ((b (point)))
+    (let ((string (filter-buffer-substring b (point-max) t)))
+      (insert "<#multipart type=alternative><#part type=text/plain>")
+      (insert string)
+      (insert (myfunc-read-file "~/documents/signature/work.txt"))
+      (insert "<#multipart type=related><#part type=text/html><p>")
+      (insert (myfunc-replace-in-string "\n" "<br />" string))
+      (insert (myfunc-read-file "~/documents/signature/work.html"))
+      (insert "</p><#/part>")
+      (insert "<#part type=\"image/png\" name=\"work.png\" filename=\"/home/branduren/documents/signature/work.png\" disposition=inline id=\"<part1.04010807.00060384@tekno.dk>\"><#/part>
+<#/multipart>
+<#/multipart>"))))
+
+(add-hook 'message-mode-hook
+      '(lambda()
+          (local-set-key (kbd "C-c w") 'myfunc-mail-with-signature)))
+#+end_src
+
+
+#+begin_src emacs-lisp
 (global-set-key [f5]  'mu4e)
 #+end_src
 *** Restclient
