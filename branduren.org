@@ -535,6 +535,10 @@ Therefore it's alot easier if I can toggle dired-dwim-target.
 (openwith-mode t)
 #+end_src
 
+#+begin_src emacs-lisp
+(add-to-list  'mm-inhibit-file-name-handlers 'openwith-file-handler)
+#+end_src
+
 ** Basic editing
 *** cycle spaceing
 Makes it easy to toggle between how many spacing.
