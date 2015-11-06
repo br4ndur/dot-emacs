@@ -1620,7 +1620,8 @@ Mode for jekyll blogs.
 #+begin_src emacs-lisp
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 (require 'mu4e)
-;;(require 'org-mu4e)
+(require 'org-mu4e)
+(setq org-mu4e-convert-to-html t)
 #+end_src
 
 Configure msmtp
@@ -1647,13 +1648,10 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
   mu4e-view-show-images t
   mu4e-image-max-width 800
   mu4e-use-fancy-chars t
-
+;  mu4e-html2text-command "w3m -dump -T text/html"
+;  w3m-command "/usr/bin/w3m"
   mu4e-view-prefer-html t
-
-  ;; smtp
-
-;  message-send-mail-function 'smtpmail-send-it
-;  smtpmail-stream-type 'starttls
+  mail-user-agent 'mu4e-user-agent
 
   ;; keybindings
   mu4e-maildir-shortcuts
@@ -1668,7 +1666,7 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
   mu4e-attachment-dir  "~/downloads"
 
   ; insert sign
-  mu4e-compose-signature-auto-include 't
+;  mu4e-compose-signature-auto-include 't
 )
 #+end_src
 
@@ -1747,6 +1745,18 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
 (setq message-citation-line-format "%N @ %Y-%m-%d %H:%M %Z:\n")
 (setq message-citation-line-function 'message-insert-formatted-citation-line)
 (setq mu4e-view-show-addresses 't)
+
+(setq
+ mu4e-headers-seen-mark '("S" . "☑")
+ mu4e-headers-new-mark '("N" .  "✉")
+ mu4e-headers-replied-mark '("R" . "↵")
+ mu4e-headers-passed-mark '("P" . "⇉")
+ mu4e-headers-encrypted-mark '("x" . "⚷")
+ mu4e-headers-signed-mark '("s" . "✍")
+ mu4e-headers-empty-parent-prefix '("-" . "◆")
+ mu4e-headers-first-child-prefix '("\\" . "▶")
+ mu4e-use-fancy-chars t
+)
 
 (setq mu4e-headers-fields
     '( (:date          .  25)
