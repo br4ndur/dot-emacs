@@ -1113,6 +1113,27 @@ Speed commands, when the cursor is at the beginning of a headline, i.e., before 
 ;(load "scrum.el" nil t t)
 #+end_src
 
+** Writing
+#+begin_src emacs-lisp
+(use-package google-translate
+    :ensure google-translate
+    :init
+    (setq
+    google-translate-default-source-language "en"
+    google-translate-default-target-language "da"
+          google-translate-enable-ido-completion t
+          google-translate-show-phonetic t
+          google-translate-pop-up-buffer-set-focus t))
+
+    (global-unset-key (kbd "C--"))
+    (define-prefix-command 'custom-user-map)
+    (global-set-key (kbd "C--") 'custom-user-map)
+
+    (global-set-key (kbd "C-- t") 'google-translate-at-point)
+    (global-set-key (kbd "C-- T") 'google-translate-at-point-reverse)
+
+#+end_src
+
 ** Coding
 *** Tab width of 2 is compact and readable
 #+begin_src emacs-lisp
