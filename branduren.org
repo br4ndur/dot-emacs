@@ -1628,28 +1628,21 @@ Mode for jekyll blogs.
 (add-hook 'erc-text-matched-hook 'call-libnotify)
 #+end_src
 
-*** Gnus for rss
-
-#+begin_src emacs-lisp
-(setq gnus-select-method '(nnnil ""))
-
-(add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
-#+end_src
-
-*** Mu4e for mail
-
-#+begin_src emacs-lisp
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-(require 'mu4e)
-(require 'org-mu4e)
-(setq org-mu4e-convert-to-html t)
-#+end_src
-
+*** Email
+**** SMTP
 Configure msmtp
 #+begin_src emacs-lisp
 (setq message-send-mail-function 'message-send-mail-with-sendmail)
 (setq sendmail-program "/usr/bin/msmtp")
 (setq message-sendmail-f-is-evil 't)
+#+end_src
+
+**** Mu4e
+#+begin_src emacs-lisp
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+(require 'mu4e)
+(require 'org-mu4e)
+(setq org-mu4e-convert-to-html t)
 #+end_src
 
 for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-i-use-eww-as-a-renderer-for-mu4e][stackoverflow]]
@@ -1706,11 +1699,6 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
           (setq message-sendmail-extra-arguments (list '"-a" account))))))
 (setq message-sendmail-envelope-from 'header)
 (add-hook 'message-send-mail-hook 'choose-msmtp-account)
-;(add-hook 'message-send-mail-hook 'mu4e-multi-smtpmail-set-msmtp-account)
-
-
-;(global-set-key (kbd "C-x m") mu4e-compose-new)
-;(global-set-key (kbd "C-x m") 'mu4e-multi-compose-new)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1789,6 +1777,12 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
       (imagemagick-register-types))
 #+end_src
 
+Add mu4e shortcut
+#+begin_src emacs-lisp
+(global-set-key [f5]  'mu4e)
+#+end_src
+
+**** Signature
 Insert work signature and generate html after composing an email.
 It generates one format for plaintext and another for html.
 
@@ -1826,10 +1820,6 @@ It generates one format for plaintext and another for html.
           (local-set-key (kbd "C-c w") 'myfunc-mail-with-signature)))
 #+end_src
 
-
-#+begin_src emacs-lisp
-(global-set-key [f5]  'mu4e)
-#+end_src
 *** Restclient
 (use-package restclient
    :ensure restclient)
