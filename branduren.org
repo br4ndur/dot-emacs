@@ -1491,6 +1491,36 @@ Remove the default, annoying, gray background on 80% of the webpages.
 
 ** Major modes
 
+*** Sauron
+
+A brillaint mode that makes it easy to keep track of the events happening around us.
+
+#+begin_src emacs-lisp
+(use-package sauron
+  :ensure sauron
+  :init
+  (setq sauron-min-priority 1)
+)
+#+end_src
+
+*** elfeed
+
+Tracks rss and atom feeds.
+
+#+begin_src emacs-lisp
+(use-package elfeed
+  :ensure elfeed
+  :init
+  (setq elfeed-feeds
+  '("http://xkcd.com/atom.xml"
+    "https://www.schneier.com/blog/atom.xml"
+    "http://irreal.org/blog/?feed=rss2"
+    "http://nullprogram.com/feed/"
+    "http://sachachua.com/blog/feed/"
+    "http://wsmoak.net/feed.xml")))
+#+end_src
+
+
 *** Twittering-mode
 #+begin_src emacs-lisp
 (use-package twittering-mode
