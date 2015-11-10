@@ -1,6 +1,6 @@
 #+TITLE:     Emacs configuration
 #+AUTHOR:    Brandur Øssursson
-#+EMAIL:     branduren@gmail.com
+#+EMAIL:     branduren@ktbit.com
 
 * About this file
 This file makes my life and work a joy.
@@ -10,7 +10,7 @@ This file makes my life and work a joy.
 
 #+begin_src emacs-lisp
   (setq user-full-name "Brandur Øssursson"
-        user-mail-address "branduren@gmail.com.")
+        user-mail-address "brandur@ktbit.com.")
 #+end_src
 
 ** Emacs initialization
@@ -1599,7 +1599,7 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
 (setq
   ;; general
   mu4e-update-interval 300
-  mu4e-maildir       "~/.mail"   ;; top-level Maildir
+  mu4e-maildir "~/.mail"   ;; top-level Maildir
   mu4e-sent-messages-behavior 'delete
   mu4e-update-interval 600
   message-kill-buffer-on-exit t
@@ -1614,11 +1614,12 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
   ;; keybindings
   mu4e-maildir-shortcuts
             '( ("/gmail/INBOX"               . ?i)
-               ("/gmail/[Gmail].Sent Mail"   . ?s)
-               ("/gmail/[Gmail].Trash"       . ?t)
-               ("/gmail/[Gmail].All Mail"    . ?a)
-               ("/tekno/INBOX"            . ?w)
-               ("/tekno/Trash"            . ?f))
+               ("/ktbit/INBOX"               . ?h)
+               ("/ktbit/Sent"                . ?s)
+               ("/ktbit/Drafts"              . ?d)
+               ("/ktbit/Trash"               . ?t)
+               ("/ktbit/Spam"                . ?j)
+               ("/tekno/INBOX"               . ?w))
 
   ; attachment dir
   mu4e-attachment-dir  "~/downloads"
@@ -1638,6 +1639,7 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
                      (message-fetch-field "from")))
              (account
               (cond
+               ((string-match "brandur@ktbit.com" from) "ktbit")
                ((string-match "branduren@gmail.com" from) "gmail")
                ((string-match "boe@tekno.dk" from) "tekno"))))
           (setq message-sendmail-extra-arguments (list '"-a" account))))))
@@ -1647,30 +1649,35 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
 
 #+begin_src emacs-lisp
 
-(setq mu4e-sent-folder "/gmail/[Gmail].Sent Mail"
-      mu4e-drafts-folder "/gmail/[Gmail].Drafts"
-      mu4e-trash-folder "/gmail/[Gmail].Trash"
+(setq mu4e-sent-folder "/ktbit/Sent"
+      mu4e-drafts-folder "/ktbit/Drafts"
+      mu4e-trash-folder "/ktbit/Trash"
 )
 
 (defvar my-mu4e-account-alist
-  '(("gmail"
-     (mu4e-sent-folder "/[Gmail].Sent Mail")
-     (mu4e-drafts-folder "/[Gmail].Drafts")
-     (mu4e-trash-folder "/[Gmail].Trash")
-     (user-mail-address "branduren@gmail.com")
-)
+  '(("ktbit"
+     (mu4e-sent-folder "/ktbit/Sent")
+     (mu4e-drafts-folder "/ktbit/Drafts")
+     (mu4e-trash-folder "/ktbit/Trash")
+     (user-mail-address "brandur@ktbit.com"))
     ("tekno"
      (mu4e-sent-folder "/sent")
      (mu4e-drafts-folder "/drafts")
      (mu4e-trash-folder "/trash")
-     (user-mail-address "boe@tekno.dk")
-)))
+     (user-mail-address "boe@tekno.dk"))
+    ("gmail"
+     (mu4e-sent-folder "/[Gmail].Sent Mail")
+     (mu4e-drafts-folder "/[Gmail].Drafts")
+     (mu4e-trash-folder "/[Gmail].Trash")
+     (user-mail-address "branduren@gmail.com"))
+))
 
 #+end_src
 
 #+begin_src emacs-lisp
 ;; Found here - http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html
 ;;
+
 (defun my-mu4e-set-account ()
   "Set the account for composing a message."
   (let* ((account
@@ -1682,7 +1689,7 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
                                      (mapconcat #'(lambda (var) (car var))
                                                 my-mu4e-account-alist "/"))
                              (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
-                             nil t nil nil (car my-mu4e-account-alist))))
+                             nil t nil nil (caar my-mu4e-account-alist))))
          (account-vars (cdr (assoc account my-mu4e-account-alist))))
     (if account-vars
         (mapc #'(lambda (var)
