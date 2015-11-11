@@ -1027,12 +1027,13 @@ Speed commands, when the cursor is at the beginning of a headline, i.e., before 
 *** Presentations
 #+begin_src emacs-lisp
 (use-package ox-reveal
-    :ensure ox-reveal
-)
-(setq org-reveal-root "file:///srv/http/reveal/")
-  (use-package org-present
-    :ensure org-present
-  )
+    :ensure ox-reveal)
+
+;(setq org-reveal-root "file:///srv/http/reveal/")
+(setq org-reveal-root "~/documents/reveal/reveal.js/")
+
+(use-package org-present
+    :ensure org-present)
 #+end_src
 
 *** org-present
