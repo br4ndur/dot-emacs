@@ -1631,8 +1631,6 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
   ;; general
   mu4e-update-interval 300
   mu4e-maildir "~/.mail"   ;; top-level Maildir
-  mu4e-sent-messages-behavior 'delete
-  mu4e-update-interval 600
   message-kill-buffer-on-exit t
   mu4e-view-show-images t
   mu4e-image-max-width 800
