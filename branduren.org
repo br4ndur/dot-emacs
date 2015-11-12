@@ -1500,7 +1500,7 @@ A brillaint mode that makes it easy to keep track of the events happening around
 (use-package sauron
   :ensure sauron
   :init
-  (setq sauron-min-priority 1)
+  (setq sauron-prio-elfeed-default 4)
 )
 #+end_src
 
