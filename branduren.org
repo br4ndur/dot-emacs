@@ -1530,6 +1530,7 @@ Tracks rss and atom feeds.
     "http://irreal.org/blog/?feed=rss2"
     "http://nullprogram.com/feed/"
     "http://sachachua.com/blog/feed/"
+    "http://emacsredux.com/atom.xml"
     "http://wsmoak.net/feed.xml"
     "http://ergoemacs.org/emacs/blog.xml")))
     (run-with-timer 0 300 'elfeed-update)
