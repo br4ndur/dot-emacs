@@ -775,6 +775,17 @@ This command is convenient when reading novel, documentation."
   (setq paradox-github-token 'AddTokenHere)
 #+end_src
 
+** Keyfreq
+#+begin_src emacs-lisp
+  (use-package keyfreq
+  :ensure keyfreq
+  :init
+  (keyfreq-mode t)
+  (keyfreq-autosave-mode t)
+)
+#+end_src
+
+
 ** Org
 *** Open by default
 #+begin_src emacs-lisp
