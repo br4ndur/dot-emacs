@@ -1442,7 +1442,7 @@ Lets me jump to a specific char anywhere on the screen three key strokes. C-\. [
 I used to use conkeror and still do sometime, it makes me use my emacs-fu in the browser.
 But the development in the project is going too slow, but I will leave it in here to check up later.
 #+begin_src emacs-lisp
-(setq browse-url-generic-program (executable-find "/usr/bin/firefox-developer"))
+(setq browse-url-generic-program (executable-find "/usr/bin/firefox-aurora"))
 ;(setq browse-url-generic-program (executable-find "/usr/bin/conkeror"))
 (setq browse-url-browser-function 'browse-url-generic)
 #+end_src
