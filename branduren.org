@@ -1063,6 +1063,14 @@ Speed commands, when the cursor is at the beginning of a headline, i.e., before 
               (org-remove-inline-images)))
 #+end_src
 
+*** org-bullets
+#+begin_src emacs-lisp
+(use-package org-bullest
+    :ensure org-bullets
+    :init
+    (add-hook 'org-mode-hook 'org-bullets-mode)
+)
+#+end_src
 ** Scrum
 #+begin_src emacs-lisp
 ;(add-to-list 'load-path "~/.emacs.d/elpa/emacs-scrum")
