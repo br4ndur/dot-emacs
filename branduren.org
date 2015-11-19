@@ -1065,7 +1065,7 @@ Speed commands, when the cursor is at the beginning of a headline, i.e., before 
 
 *** org-bullets
 #+begin_src emacs-lisp
-(use-package org-bullest
+(use-package org-bullets
     :ensure org-bullets
     :init
     (add-hook 'org-mode-hook 'org-bullets-mode)
