@@ -613,7 +613,6 @@ Set indentation by analysing buffer.
 (setq-default indent-tabs-mode nil)
 #+end_src
 
-** Basic editing
 *** eval and replace
 Makes it easy to eval lisp in what ever mode I'm in.
 See it in action here: http://emacsrocks.com/e13.html
