@@ -630,6 +630,12 @@ See it in action here: http://emacsrocks.com/e13.html
 
   (bind-key "C-x C-u" 'eval-and-replace)
 #+end_src
+*** Beacon-mode
+(use-package beacon
+:ensure beacon
+:init
+(beacon-mode 1)
+)
 
 ** Correction ispell
 
