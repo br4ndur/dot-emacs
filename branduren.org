@@ -1160,7 +1160,9 @@ Best interface for git - ever.
     :bind (("C-x g" . magit-status))
 )
 #+end_src
-
+*** Git-timemachine
+(use-package git-timemachine
+    :ensure git-timemachine)
 *** Projects, projectile
 
 #+begin_src emacs-lisp
