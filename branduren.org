@@ -1210,6 +1210,8 @@ Indentation
         (setq web-mode-enable-css-colorization t)
         (setq web-mode-enable-current-column-highlight t)
         (define-key web-mode-map (kbd "C-c w") 'myfunc/tag-line-wrap)
+        :init
+        (setq web-mode-enable-auto-closing t)
     )
 
     (defun my-setup-php ()
