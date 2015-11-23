@@ -1689,6 +1689,9 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
   ; insert sign
 ;  mu4e-compose-signature-auto-include 't
 )
+
+(when (fboundp 'imagemagick-register-types)
+(imagemagick-register-types))
 #+end_src
 
 #+begin_src emacs-lisp
