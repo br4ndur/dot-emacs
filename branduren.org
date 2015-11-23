@@ -1474,7 +1474,7 @@ Remove the default, annoying, gray background on 80% of the webpages.
 
 ** Startup buffers
 #+begin_src emacs-lisp
-;;     (find-file "~/documents/org/organizer.org")
+  (find-file "~/documents/org/organizer.org")
 #+end_src
 
 ** ESS
