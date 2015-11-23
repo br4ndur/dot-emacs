@@ -1790,6 +1790,13 @@ for rendering, found at [[http://emacs.stackexchange.com/questions/3051/how-can-
       (imagemagick-register-types))
 #+end_src
 
+#+begin_src emacs-lisp
+(setq mm-discouraged-alternatives
+      '("text/html" "text/richtext")
+      mm-automatic-display
+      (-difference mm-automatic-display '("text/html" "text/enriched" "text/richtext")))
+#+end_src
+
 Add mu4e shortcut
 #+begin_src emacs-lisp
 (global-set-key [f5]  'mu4e)
