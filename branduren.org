@@ -1039,6 +1039,14 @@ Speed commands, when the cursor is at the beginning of a headline, i.e., before 
      (sh . t)
      (gnuplot . t)
   ))
+
+;org-babel
+(custom-set-variables
+ '(org-confirm-babel-evaluate nil))
+
+(add-to-list 'org-babel-default-header-args:R
+             '(:session . "*org-R*"))
+
 #+end_src
 
 *** Presentations
