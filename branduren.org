@@ -1,4 +1,4 @@
-#+TITLE:     Emacs configuration
+#+TITLE:     EMACS configuration
 #+AUTHOR:    Brandur Øssursson
 #+EMAIL:     branduren@ktbit.com
 
@@ -52,7 +52,7 @@ Add package archives
 
 
 #+begin_src emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/org-plus-contrib-20141201/")
+;(add-to-list 'load-path "~/.emacs.d/org-plus-contrib-20141201/")
 #+end_src
 
 *** Byte-compile init files to speed things
@@ -218,8 +218,8 @@ Using tango with some minor modifications.
 #+end_src
 
 #+begin_src emacs-lisp
-(add-hook 'eww-mode-hook
-          (lambda () (load-theme-buffer-local 'tango (current-buffer))))
+;(add-hook 'eww-mode-hook
+;          (lambda () (load-theme-buffer-local 'tango (current-buffer))))
 #+end_src
 
 *** Undo tree mode - visualize your undos and branches
@@ -762,8 +762,7 @@ From Xah Lee:
 
 #+begin_src emacs-lisp
 (defun xah-toggle-margin-right ()
-  "Toggle the right margin between `fill-column' or window width.
-This command is convenient when reading novel, documentation."
+  "Toggle the right margin between `fill-column' or window width. This command is convenient when reading novel, documentation."
   (interactive)
   (if (eq (cdr (window-margins)) nil)
       (set-window-margins nil 0 (- (window-body-width) fill-column))
@@ -790,7 +789,6 @@ This command is convenient when reading novel, documentation."
 )
 #+end_src
 
-
 ** Org
 *** Open by default
 #+begin_src emacs-lisp
@@ -808,7 +806,7 @@ This command is convenient when reading novel, documentation."
 Contrib modules are quite useful but I'm only using org-contacts at the moment.
 This makes it easy to save your contact in an org-file... and using it when sending emails.
 #+begin_src emacs-lisp
- (require 'org-contacts)
+; (require 'org-contacts)
  ;(require 'org-drill)
  ;(require 'org-notify)
  ;(org-notify-start)
@@ -1061,6 +1059,12 @@ Speed commands, when the cursor is at the beginning of a headline, i.e., before 
     :ensure org-present)
 #+end_src
 
+*** linum-relative
+#+begin_src emacs-lisp
+(use-package linum-relative
+    :ensure linum-relative)
+#+end_src
+
 *** org-present
 #+begin_src emacs-lisp
 ;;  (add-to-list 'load-path "~/path/to/org-present")
@@ -1085,6 +1089,50 @@ Speed commands, when the cursor is at the beginning of a headline, i.e., before 
     (add-hook 'org-mode-hook 'org-bullets-mode)
 )
 #+end_src
+*** org-beautify-theme
+#+begin_src emacs-lisp
+;;(use-package org-beautify-theme
+;;  :ensure org-beautify-theme)
+#+end_src
+
+*** org-caldav
+#+begin_src emacs-lisp
+(use-package org-caldav
+  :ensure org-caldav
+  :init
+;Should set my calendars here
+(setq org-caldav-url "https://apps.kolabnow.com/calendars/brandur@ktbit.com/ddc2cc50-422e-42bb-9ea4-92e1fa5ac70b")
+
+(url-dav-supported-p org-caldav-url)
+(url-http-options org-caldav-url)
+(plist-get (url-http-options org-caldav-url) 'dav)
+(plist-get (url-http-options org-caldav-url) 'methods)
+
+
+;; The name of your calendar, typically "Calendar" or similar
+(setq org-caldav-calendar-id "Calendar")
+
+;; Local file that gets events from the server
+(setq org-caldav-inbox "~/documents/org/private.org")
+(setq org-caldav-files org-agenda-files)
+;;  (setq org-caldav-calendars
+;;    '((:url "https://apps.kolabnow.com/calendars/brandur%40ktbit.com/ddc2cc50-422e-42bb-9ea4-92e1fa5ac70b"
+;;       :calendar-id "private" :files ("~/documents/org/private.org")
+;;       :inbox "~/documents/org/private.org"
+;;       )
+;;;      (:calendar-id "stuff@mystuff"
+;;;       :files ("~/org/sports.org" "~/org/play.org")
+;;;       :inbox "~/org/fromstuff.org")
+;;  ))
+  (setq org-icalendar-timezone "Europe/Copenhagen"
+        org-icalendar-date-time-format ";TZID=%Z:%Y%m%dT%H%M%S")
+)
+#+end_src
+*** export
+#+begin_src emacs-lisp
+(setq org-export-with-toc nil)
+#+end_src
+
 ** Scrum
 #+begin_src emacs-lisp
 ;(add-to-list 'load-path "~/.emacs.d/elpa/emacs-scrum")
@@ -1192,9 +1240,6 @@ Best interface for git - ever.
 *** Web-mode
 
 Indentation
-
-
-
 #+begin_src emacs-lisp
 (defun myfunc/tag-line-wrap (b e tag)
   "Tag every line"
@@ -1244,9 +1289,15 @@ Indentation
 #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
 #+end_src
-
+*** scss-mode
+#+begin_src emacs-lisp
+(use-package scss-mode
+        :ensure scss-mode
+)
+#+end_src
 ** Database
 
+Lets me connect to a database.
 #+begin emacs-lisp
 (seql-postgres-login-params
    '((user :default "postgres")
@@ -1338,7 +1389,6 @@ Use a different shell command for iex.
 (setq alchemist-iex-program-name "/usr/bin/iex") ;; default: iex
 #+end_src
 
-
 *** Execute setup
 
 Use a different shell command for elixir.
@@ -1353,7 +1403,6 @@ Use a different shell command for elixirc.
 (setq alchemist-compile-command "/usr/bin/elixirc") ;; default: elixirc
 #+end_src
 
-
 *** Modeline setup
 
 Disable the change of the modeline color with the last test run status.
@@ -1367,7 +1416,6 @@ Use a different keybinding prefix than
 #+begin_src emacs-lisp
 (setq alchemist-key-command-prefix (kbd "C-,")) ;; default: (kbd "C-c a")
 #+end_src
-
 
 *** Testting Mode
 
@@ -1433,7 +1481,7 @@ Select region C-* and bang, I got a cursor for each identical region. This mode 
       ("C-*" . mc/mark-all-like-this)))
 #+end_src
 
-**** All                    :drill:
+**** All
 Makes it easy to find and edit all lines matching a given regexp.
 
 #+begin_src emacs-lisp
@@ -1517,18 +1565,17 @@ Remove the default, annoying, gray background on 80% of the webpages.
 
 ;; ESS 13.05 default C-Ret conflicts with CUA mode rectangular selection.
 ;; Change shortcut to use Shift-Return
-(define-key ess-mode-map [(control return)] nil)
-(define-key ess-mode-map [(shift return)] 'ess-eval-region-or-line-and-step)
+;(define-key ess-mode-map [(control return)] nil)
+;(define-key ess-mode-map [(shift return)] 'ess-eval-region-or-line-and-step)
 
 ;; If you want all help buffers to go into one frame do:
 ;(setq ess-help-own-frame 'one)
 
 ;; I want the *R* process in its own frame
-(setq inferior-ess-own-frame t)
+;(setq inferior-ess-own-frame t)
 #+end_src
 
 ** Major modes
-
 *** Sauron
 
 A brillaint mode that makes it easy to keep track of the events happening around us.
@@ -1540,6 +1587,11 @@ A brillaint mode that makes it easy to keep track of the events happening around
   (setq sauron-prio-elfeed-default 4)
 )
 #+end_src
+
+*** kanban
+(use-package kanban
+  :ensure kanban
+)
 
 *** elfeed
 
@@ -1562,7 +1614,6 @@ Tracks rss and atom feeds.
     (run-with-timer 0 300 'elfeed-update)
 #+end_src
 
-
 *** Twittering-mode
 #+begin_src emacs-lisp
 (use-package twittering-mode
@@ -1573,8 +1624,16 @@ Tracks rss and atom feeds.
 
 )
 #+end_src
+
 *** hyde
 Mode for jekyll blogs.
+
+#+begin_src emacs-lisp
+(use-package jekyll-modes
+  :ensure jekyll-modes
+)
+#+end_src
+
 
 #+begin_src emacs-lisp
 (use-package hyde
