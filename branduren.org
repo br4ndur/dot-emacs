@@ -1621,23 +1621,15 @@ Tracks rss and atom feeds.
   :init
   (setq twittering-use-master-password t
         twittering-icon-mode t )
-
 )
 #+end_src
 
-*** hyde
+*** jekyll-mode
 Mode for jekyll blogs.
 
 #+begin_src emacs-lisp
 (use-package jekyll-modes
   :ensure jekyll-modes
-)
-#+end_src
-
-
-#+begin_src emacs-lisp
-(use-package hyde
-  :ensure hyde
 )
 #+end_src
 
