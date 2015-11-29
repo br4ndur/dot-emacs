@@ -8,6 +8,8 @@ This file makes my life and work a joy.
 * Configuration
 ** Personal information
 
+Set name and email
+
 #+begin_src emacs-lisp
   (setq user-full-name "Brandur Øssursson"
         user-mail-address "brandur@ktbit.com.")
@@ -50,15 +52,16 @@ Add package archives
 (require 'use-package)
 #+end_src
 
-
 #+begin_src emacs-lisp
 ;(add-to-list 'load-path "~/.emacs.d/org-plus-contrib-20141201/")
 #+end_src
 
 *** Byte-compile init files to speed things
 
+Compile my init files
+
 #+begin_src emacs-lisp
-(defun myscope/byte-recompile ()
+(defun myfunc/byte-recompile ()
   (interactive)
   (byte-recompile-directory "~/.emacs.d" 0))
 #+end_src
@@ -85,7 +88,7 @@ Save alot.
 
 kill all other buffers
 #+begin_src emacs-lisp
-(defun kill-other-buffers ()
+(defun myfunc/kill-other-buffers ()
   "Kill all buffers but the current one. Don't mess with special buffers."
   (interactive)
   (dolist (buffer (buffer-list))
@@ -118,7 +121,7 @@ Save history.
 
 *** Windows configuration
 
-Remove menu-, scroll-, toolbars, and tooltip.
+Remove menu-, scroll-, toolbars, and tooltip. I almost never use these distracting features.
 
 #+begin_src emacs-lisp
 (tooltip-mode -1)
@@ -183,7 +186,7 @@ Use y-n instead of yes-no.
 (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
-*** Set up a light-on-dark color scheme
+*** Theme settings
 
 Using tango with some minor modifications.
 
@@ -239,6 +242,9 @@ This lets you use C-x u and shows you an undo-tree with different branches.
 *** Help - which-key
 
 #+begin_src emacs-lisp
+
+Really helpful if I forget the end of an keybinding.
+
 (use-package which-key
   :ensure which-key
   :init
@@ -246,6 +252,9 @@ This lets you use C-x u and shows you an undo-tree with different branches.
 #+end_src
 
 *** UTF-8
+
+Prefer UTF8 encoding.
+
 #+begin_src emacs-lisp
 (prefer-coding-system 'utf-8)
 (when (display-graphic-p)
@@ -293,6 +302,8 @@ Use hippie-expand.
 (global-set-key (kbd "M-/") 'hippie-expand)
 #+end_src
 
+
+edit as root
 #+begin_src emacs-lisp
 (defun myfunc-find-file-as-root ()
   "If the file is not writable by user, edit with root-privileges using tramp/sudo"
@@ -361,13 +372,6 @@ example: M-x foreign-regexp/regexp-type/set <RET> perl <RET>
 ;;    :init
 ;;    (setq foreign-regexp/regexp-type 'perl)
 ;;  )
-#+end_src
-
-*** Join-line
-Even though I rarely use this, it's often handy when constructing macros.
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "C-x ^") 'join-line)
 #+end_src
 
 ** Navigation
@@ -636,6 +640,48 @@ See it in action here: http://emacsrocks.com/e13.html
 :init
 (beacon-mode 1)
 )
+
+*** Multiple cursors mode
+Select region C-* and bang, I got a cursor for each identical region. This mode really makes me happy.
+
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :ensure multiple-cursors
+    :diminish multiple-cursors
+    :bind
+     (("C->" . mc/mark-next-like-this)
+      ("C-<" . mc/mark-previous-like-this)
+      ("C-*" . mc/mark-all-like-this)))
+#+end_src
+
+*** All
+Makes it easy to find and edit all lines matching a given regexp.
+
+#+begin_src emacs-lisp
+(use-package all
+    :ensure all
+)
+#+end_src
+
+*** Ace Jump mode
+
+ace-jump mode
+
+#+begin_src emacs-lisp
+(use-package ace-jump-mode
+  :ensure ace-jump-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(add-hook 'ace-jump-mode-before-jump-hook
+             (lambda () (push-mark (point) t)))
+#+end_src
+
+Lets me jump to a specific char anywhere on the screen three key strokes. C-\. [char] [the char value on screen]
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-\.") 'ace-jump-char-mode)
+#+end_src
 
 ** Correction ispell
 
@@ -1466,50 +1512,6 @@ Add proxychains support to tramp methods. This requires that you have proxychain
   (tramp-default-port 22)))
 #+end_src
 
-** Advanced stuff / things I tend to forget about
-*** Editing multiple things
-**** Multiple cursors mode
-Select region C-* and bang, I got a cursor for each identical region. This mode really makes me happy.
-
-#+begin_src emacs-lisp
-  (use-package multiple-cursors
-    :ensure multiple-cursors
-    :diminish multiple-cursors
-    :bind
-     (("C->" . mc/mark-next-like-this)
-      ("C-<" . mc/mark-previous-like-this)
-      ("C-*" . mc/mark-all-like-this)))
-#+end_src
-
-**** All
-Makes it easy to find and edit all lines matching a given regexp.
-
-#+begin_src emacs-lisp
-(use-package all
-    :ensure all
-)
-#+end_src
-
-*** Ace Jump mode
-
-ace-jump mode
-
-#+begin_src emacs-lisp
-(use-package ace-jump-mode
-  :ensure ace-jump-mode)
-#+end_src
-
-#+begin_src emacs-lisp
-(add-hook 'ace-jump-mode-before-jump-hook
-             (lambda () (push-mark (point) t)))
-#+end_src
-
-Lets me jump to a specific char anywhere on the screen three key strokes. C-\. [char] [the char value on screen]
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "C-\.") 'ace-jump-char-mode)
-#+end_src
-
 ** Web browsing
 *** set browser
 
@@ -1531,48 +1533,6 @@ Remove the default, annoying, gray background on 80% of the webpages.
 ** Startup buffers
 #+begin_src emacs-lisp
   (find-file "~/documents/org/organizer.org")
-#+end_src
-
-** ESS
-#+begin_src emacs-lisp
-(use-package ess-R-data-view
-    :ensure ess-R-data-view
-)
-(use-package ess-R-object-popup
-    :ensure ess-R-object-popup
-)
-(use-package ess-smart-underscore
-    :ensure ess-smart-underscore
-)
-
-  (use-package ess-site
-    :ensure ess
-    :init
-    (progn
-      (require 'ess-site)
-      (add-hook 'R-mode-hook 'auto-complete-mode)
-      (setq ess-use-auto-complete 'script-only)
-    ))
-
-(set-face-attribute 'ac-candidate-face nil   :background "#00222c" :foreground "light gray")
-(set-face-attribute 'ac-selection-face nil   :background "SteelBlue4" :foreground "white")
-(set-face-attribute 'popup-tip-face    nil   :background "#003A4E" :foreground "light gray")
-#+end_src
-
-#+begin_src emacs-lisp :eval no :tangle no
-;; start R in current working directory, don't let R ask user
-(setq ess-ask-for-ess-directory t)
-
-;; ESS 13.05 default C-Ret conflicts with CUA mode rectangular selection.
-;; Change shortcut to use Shift-Return
-;(define-key ess-mode-map [(control return)] nil)
-;(define-key ess-mode-map [(shift return)] 'ess-eval-region-or-line-and-step)
-
-;; If you want all help buffers to go into one frame do:
-;(setq ess-help-own-frame 'one)
-
-;; I want the *R* process in its own frame
-;(setq inferior-ess-own-frame t)
 #+end_src
 
 ** Major modes
@@ -1603,23 +1563,26 @@ A brillaint mode that makes it easy to keep track of the events happening around
 
 *** elfeed
 Tracks rss and atom feeds.
-
 #+begin_src emacs-lisp
 (use-package elfeed
   :ensure elfeed
   :init
   (setq elfeed-feeds
-  '("http://xkcd.com/atom.xml"
-    "https://www.schneier.com/blog/atom.xml"
-    "http://leoville.tv/podcasts/sn.xml" ;security now
-    "http://irreal.org/blog/?feed=rss2"
-    "http://nullprogram.com/feed/"
-    "http://sachachua.com/blog/feed/"
-    "http://emacsredux.com/atom.xml"
-    "http://wsmoak.net/feed.xml"
-    "http://ergoemacs.org/emacs/blog.xml")))
+  '("http://xkcd.com/atom.xml"                                     ; always funny
+    "https://www.schneier.com/blog/atom.xml"                       ; security
+    "http://backend.deviantart.com/rss.xml?q=gallery%3Afirestashe" ; such a great artist
+    "http://leoville.tv/podcasts/sn.xml"                           ; security now
+    "http://irreal.org/blog/?feed=rss2"                            ; emacs
+    "http://nullprogram.com/feed/"                                 ; emacs
+    "http://sachachua.com/blog/feed/"                              ; emacs
+    "http://emacsredux.com/atom.xml"                               ; emacs
+    "http://wsmoak.net/feed.xml"                                   ; elixir
+    "http://ergoemacs.org/emacs/blog.xml")))                       ; emacs
     (run-with-timer 0 300 'elfeed-update)
 #+end_src
+
+#+RESULTS:
+: [nil 22105 8697 460315 300 elfeed-update nil nil 910000]
 
 *** Twittering-mode
 #+begin_src emacs-lisp
@@ -1883,7 +1846,6 @@ It generates one format for plaintext and another for html.
        (point-min)
        (point-max))))
 
-
 (defun myfunc-replace-in-string (what with in)
   (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
 
@@ -1912,6 +1874,47 @@ It generates one format for plaintext and another for html.
 *** Restclient
 (use-package restclient
    :ensure restclient)
+*** ESS
+ #+begin_src emacs-lisp
+ (use-package ess-R-data-view
+     :ensure ess-R-data-view
+ )
+ (use-package ess-R-object-popup
+     :ensure ess-R-object-popup
+ )
+ (use-package ess-smart-underscore
+     :ensure ess-smart-underscore
+ )
+
+   (use-package ess-site
+     :ensure ess
+     :init
+     (progn
+       (require 'ess-site)
+       (add-hook 'R-mode-hook 'auto-complete-mode)
+       (setq ess-use-auto-complete 'script-only)
+     ))
+
+ (set-face-attribute 'ac-candidate-face nil   :background "#00222c" :foreground "light gray")
+ (set-face-attribute 'ac-selection-face nil   :background "SteelBlue4" :foreground "white")
+ (set-face-attribute 'popup-tip-face    nil   :background "#003A4E" :foreground "light gray")
+ #+end_src
+
+ #+begin_src emacs-lisp :eval no :tangle no
+ ;; start R in current working directory, don't let R ask user
+ (setq ess-ask-for-ess-directory t)
+
+ ;; ESS 13.05 default C-Ret conflicts with CUA mode rectangular selection.
+ ;; Change shortcut to use Shift-Return
+ ;(define-key ess-mode-map [(control return)] nil)
+ ;(define-key ess-mode-map [(shift return)] 'ess-eval-region-or-line-and-step)
+
+ ;; If you want all help buffers to go into one frame do:
+ ;(setq ess-help-own-frame 'one)
+
+ ;; I want the *R* process in its own frame
+ ;(setq inferior-ess-own-frame t)
+ #+end_src
 
 ** Autocomplete
 #+begin_src emacs-lisp
