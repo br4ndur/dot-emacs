@@ -1,6 +1,6 @@
 #+TITLE:     EMACS configuration
 #+AUTHOR:    Brandur Øssursson
-#+EMAIL:     branduren@ktbit.com
+#+EMAIL:     brandur@ktbit.com
 
 * About this file
 This file makes my life and work a joy.
