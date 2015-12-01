@@ -241,10 +241,8 @@ This lets you use C-x u and shows you an undo-tree with different branches.
 
 *** Help - which-key
 
-#+begin_src emacs-lisp
-
 Really helpful if I forget the end of an keybinding.
-
+#+begin_src emacs-lisp
 (use-package which-key
   :ensure which-key
   :init
