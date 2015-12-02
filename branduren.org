@@ -12,7 +12,7 @@ Set name and email
 
 #+begin_src emacs-lisp
   (setq user-full-name "Brandur Øssursson"
-        user-mail-address "brandur@ktbit.com.")
+        user-mail-address "brandur@ktbit.com")
 #+end_src
 
 ** Emacs initialization
