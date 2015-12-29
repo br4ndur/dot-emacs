@@ -1339,23 +1339,26 @@ Indentation
         :ensure scss-mode
 )
 #+end_src
+
+#+RESULTS:
+
 ** Database
 
 Lets me connect to a database.
-#+begin emacs-lisp
-(seql-postgres-login-params
+#+begin_src emacs-lisp
+(setq sql-postgres-login-params
    '((user :default "postgres")
     (database :default "postgres")
     (server :default "localhost")
     (port :default 5432)))
 
-(adok 'sql-interactive-mode-hook
+(add-hook 'sql-interactive-mode-hook
       (lambda ()
         (toggle-truncate-lines t)))
 
 ;; server list
-(seql-connection-alist
-   ((dev.partner (sql-product 'mysql)
+(setq sql-connection-alist
+   '((dev.partner (sql-product 'mysql)
               (sql-port 54321)
               (sql-server "localhost")
               (sql-user "demo")
@@ -1371,35 +1374,35 @@ Lets me connect to a database.
                   (sql-user "postgres")
                   (sql-database "raffle_dev"))))
 
-(desql/sql-connect-server (connection)
+(defun sql/sql-connect-server (connection)
   "ect to the input server using tmtxt/sql-servers-list"
-  (ractive
-   m-comp-read "Select server: " (mapcar (lambda (item)
-                                           (list
-                                            (symbol-name (nth 0 item))
-                                            (nth 0 item)))
-                                         sql-connection-alist)))
+  (interactive
+   (helm-comp-read "Select server: " (mapcar (lambda (item)
+                                               (list
+                                                (symbol-name (nth 0 item))
+                                                (nth 0 item)))
+                                             sql-connection-alist)))
   ;password
-  (ire 'my-password "~/.emacs.d/dbpass.el.gpg")
-  ;the sql connection info and product from the sql-connection-alist
-  ( ((connection-info (assoc connection sql-connection-alist))
-     (connection-product (nth 1 (nth 1 (assoc 'sql-product connection-info))))
-     (sql-password (nth 1 (assoc connection my-sql-password))))
-   delete the connection info from the sql-connection-alist
-   tq sql-connection-alist (assq-delete-all connection sql-connection-alist))
-   delete the old password from the connection-info
-   tq connection-info (assq-delete-all 'sql-password connection-info))
-   add the password to the connection-info
-   onc connection-info `((sql-password ,sql-password)))
-   add back the connection info to the beginning of sql-connection-alist
-   (last used server will appear first for the next prompt)
-   d-to-list 'sql-connection-alist connection-info)
-   override the sql-product by the product of this connection
-   tq sql-product connection-product)
-   connect
-    current-prefix-arg
-    (sql-connect connection connection)
-   sql-connect connection))))
+  (require 'my-password "~/.emacs.d/dbpass.el.gpg")
+  ;; get the sql connection info and product from the sql-connection-alist
+  (let* ((connection-info (assoc connection sql-connection-alist))
+         (connection-product (nth 1 (nth 1 (assoc 'sql-product connection-info))))
+         (sql-password (nth 1 (assoc connection tmtxt-sql-password))))
+    ;; delete the connection info from the sql-connection-alist
+    (setq sql-connection-alist (assq-delete-all connection sql-connection-alist))
+    ;; delete the old password from the connection-info
+    (setq connection-info (assq-delete-all 'sql-password connection-info))
+    ;; add the password to the connection-info
+    (nconc connection-info `((sql-password ,sql-password)))
+    ;; add back the connection info to the beginning of sql-connection-alist
+    ;; (last used server will appear first for the next prompt)
+    (add-to-list 'sql-connection-alist connection-info)
+    ;; override the sql-product by the product of this connection
+    (setq sql-product connection-product)
+    ;; connect
+    (if current-prefix-arg
+        (sql-connect connection connection)
+      (sql-connect connection))))
 
 #+end_src
 
