@@ -508,6 +508,27 @@ Therefore it's alot easier if I can toggle dired-dwim-target.
 (define-key dired-mode-map (kbd "C-,") 'toggle-dired-dwim-target)
 #+end_src
 
+*** dired+
+#+begin_src emacs-lisp
+(use-package dired+
+  :ensure t
+)
+#+end_src
+
+*** dired-avfs
+#+begin_src emacs-lisp
+(use-package dired-avfs
+  :ensure t
+)
+#+end_src
+
+*** bookmark+
+#+begin_src emacs-lisp
+(use-package bookmark+
+  :ensure t
+)
+#+end_src
+
 *** Openwith
 #+begin_src emacs-lisp
 (use-package openwith
