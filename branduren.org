@@ -1570,6 +1570,16 @@ A brillaint mode that makes it easy to keep track of the events happening around
 )
 #+end_src
 
+*** Macro-Math
+#+begin_src emacs-lisp
+(use-package macro-math
+  :ensure macro-math
+  :init
+  (global-set-key (kbd "C-- r") 'macro-math-eval-and-round-region)
+  (global-set-key (kbd "C-- c") 'macro-math-eval-region)
+)
+#+end_src
+
 *** kanban
 (use-package kanban
   :ensure kanban
