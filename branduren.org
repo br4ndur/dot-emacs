@@ -516,10 +516,23 @@ Therefore it's alot easier if I can toggle dired-dwim-target.
 #+end_src
 
 *** dired-avfs
+
+Lets me browse compress files. But I need to run the mountavfs command to get things working.
 #+begin_src emacs-lisp
 (use-package dired-avfs
   :ensure t
 )
+#+end_src
+
+*** dired-narrow
+
+Lets me quickly filter the files in dired using "/", and to exit the filtering I simply press "g".
+
+#+begin_src emacs-lisp
+(use-package dired-narrow
+  :ensure t
+  :bind (:map dired-mode-map
+              ("/" . dired-narrow)))
 #+end_src
 
 *** bookmark+
