@@ -1571,6 +1571,18 @@ Remove the default, annoying, gray background on 80% of the webpages.
 #+end_src
 
 ** Major modes
+*** fireplace
+#+begin_src emacs-lisp
+
+(add-to-list 'load-path "~/.emacs.d/fireplace/")
+(require 'fireplace)
+
+;; Not in melpa yet
+;;(use-package fireplace
+;;  :ensure fireplace
+;;)
+#+end_src
+
 *** Sauron
 
 A brillaint mode that makes it easy to keep track of the events happening around us.
