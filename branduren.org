@@ -1572,15 +1572,12 @@ Remove the default, annoying, gray background on 80% of the webpages.
 
 ** Major modes
 *** fireplace
+A cozy fireplace
+
 #+begin_src emacs-lisp
-
-(add-to-list 'load-path "~/.emacs.d/fireplace/")
-(require 'fireplace)
-
-;; Not in melpa yet
-;;(use-package fireplace
-;;  :ensure fireplace
-;;)
+(use-package fireplace
+  :ensure t
+)
 #+end_src
 
 *** Sauron
