@@ -1634,15 +1634,16 @@ Tracks rss and atom feeds.
   (setq elfeed-feeds
   '("http://xkcd.com/atom.xml"                                     ; always funny
     "https://www.schneier.com/blog/atom.xml"                       ; security
-    "http://backend.deviantart.com/rss.xml?q=gallery%3Afirestashe" ; such a great artist
+    "http://firelystashe.tumblr.com/rss"                           ; such a great artist
     "http://leoville.tv/podcasts/sn.xml"                           ; security now
     "http://irreal.org/blog/?feed=rss2"                            ; emacs
     "http://nullprogram.com/feed/"                                 ; emacs
     "http://sachachua.com/blog/feed/"                              ; emacs
     "http://emacsredux.com/atom.xml"                               ; emacs
     "http://wsmoak.net/feed.xml"                                   ; elixir
-    "http://ergoemacs.org/emacs/blog.xml")))                       ; emacs
-    (run-with-timer 0 300 'elfeed-update)
+    ))
+)
+;    (run-with-timer 0 300 'elfeed-update)
 #+end_src
 
 #+RESULTS:
