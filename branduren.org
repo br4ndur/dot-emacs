@@ -1637,17 +1637,16 @@ Tracks rss and atom feeds.
     "http://firelystashe.tumblr.com/rss"                           ; such a great artist
     "http://leoville.tv/podcasts/sn.xml"                           ; security now
     "http://irreal.org/blog/?feed=rss2"                            ; emacs
+    "http://pragmaticemacs.com/feed/"                              ; emacs
     "http://nullprogram.com/feed/"                                 ; emacs
     "http://sachachua.com/blog/feed/"                              ; emacs
     "http://emacsredux.com/atom.xml"                               ; emacs
+    "http://endlessparentheses.com/atom.xml"                       ; emacs
     "http://wsmoak.net/feed.xml"                                   ; elixir
     ))
 )
 ;    (run-with-timer 0 300 'elfeed-update)
 #+end_src
-
-#+RESULTS:
-: [nil 22105 8697 460315 300 elfeed-update nil nil 910000]
 
 *** Twittering-mode
 #+begin_src emacs-lisp
