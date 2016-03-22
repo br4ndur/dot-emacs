@@ -131,9 +131,19 @@ Remove menu-, scroll-, toolbars, and tooltip. I almost never use these distracti
 (global-set-key [f2] 'menu-bar-mode)
 #+end_src
 
+scroll when offset is 3
+#+begin_src emacs-lisp
+;(setq scroll-margin 3)
+#+end_src
+
 Inhibit startup message
 #+begin_src emacs-lisp
 (setq inhibit-startup-message t)
+#+end_src
+
+Never quit emacs.
+#+begin_src emacs-lisp
+(global-unset-key (kbd "C-x C-c"))
 #+end_src
 
 *** Winner mode - undo and redo window configuration
