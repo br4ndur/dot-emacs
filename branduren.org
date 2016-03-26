@@ -375,19 +375,6 @@ Use regex by default, and make it easy to query-replace.
 (global-set-key (kbd "C-M-s") 'query-replace-regexp)
 #+end_src
 
-Foreign-regex lets us construct regex for other programming envirements. This is very convenient for testing puposes.
-supports: perl, ruby, javascript, python
--
-example: M-x foreign-regexp/regexp-type/set <RET> perl <RET>
-
-#+begin_src emacs-lisp
-;;  (use-package foreign-regexp
-;;    :ensure foreign-regexp
-;;    :init
-;;    (setq foreign-regexp/regexp-type 'perl)
-;;  )
-#+end_src
-
 ** Navigation
 *** newline above
 
