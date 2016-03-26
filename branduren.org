@@ -196,16 +196,6 @@ Use y-n instead of yes-no.
 (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
-*** smart-mode-line
-
-#+begin_src emacs-lisp
- (use-package smart-mode-line
-     :ensure t
-     :init
-     (smart-mode-line-enable t)
-)
-#+end_src
-
 *** Theme settings
 
 Using tango with some minor modifications.
@@ -227,9 +217,11 @@ Using tango with some minor modifications.
     (myfunc/setup-color-theme))
 #+end_src
 
+#+begin_src emacs-lisp
 (use-package danneskjold-theme
     :ensure t
 )
+#+end_src
 
 #+begin_src emacs-lisp
 ;  (custom-set-faces
