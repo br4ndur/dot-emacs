@@ -515,8 +515,15 @@ Therefore it's alot easier if I can toggle dired-dwim-target.
 #+begin_src emacs-lisp
 (use-package dired+
   :ensure t
+  :bind (:map dired-mode-map
+              ("C-- h" . dired-dotfiles-toggle))
 )
 #+end_src
+
+#+begin_src emacs-lisp
+(setq dired-listing-switches "-alh")
+#+end_src
+
 
 *** dired-avfs
 
@@ -536,6 +543,15 @@ Lets me quickly filter the files in dired using "/", and to exit the filtering I
   :ensure t
   :bind (:map dired-mode-map
               ("/" . dired-narrow)))
+#+end_src
+
+***  peep-dired
+#+begin_src emacs-lisp
+(use-package peep-dired
+  :ensure t
+  :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
+  :bind (:map dired-mode-map
+              ("P" . peep-dired)))
 #+end_src
 
 *** bookmark+
