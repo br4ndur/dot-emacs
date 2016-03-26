@@ -1652,14 +1652,6 @@ A brillaint mode that makes it easy to keep track of the events happening around
   :ensure kanban
 )
 
-*** minimap
-#+begin_src emacs-lisp
-(use-package minimap
-  :ensure minimap
-)
-(global-set-key (kbd "C-- m") 'minimap-toggle)
-#+end_src
-
 *** elfeed
 Tracks rss and atom feeds.
 #+begin_src emacs-lisp
