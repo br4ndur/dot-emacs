@@ -574,7 +574,8 @@ Lets me quickly filter the files in dired using "/", and to exit the filtering I
             (list (openwith-make-extension-regexp '("flac" "mp3" "wav"))
                   "vlc" '(file))
             (list (openwith-make-extension-regexp '("avi" "flv" "mov" "mp4" "ogv"
-                                                    "mpeg" "mpg" "ogg" "wmv" "mkv"))
+                                                    "m4p" "mpg" "ogg" "wmv" "mkv"
+                                                    "m4a"))
                   "vlc" '(file))
             (list (openwith-make-extension-regexp '("rar" "part"))
                   "vlc" '(file))
