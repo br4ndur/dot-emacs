@@ -375,6 +375,17 @@ Use regex by default, and make it easy to query-replace.
 (global-set-key (kbd "C-M-s") 'query-replace-regexp)
 #+end_src
 
+Move the cursor to the start of search when exiting with C-Return.
+#+begin_src emacs-lisp
+(define-key isearch-mode-map [(control return)]
+  #'isearch-exit-other-end)
+(defun isearch-exit-other-end ()
+  "Exit isearch, at the opposite end of the string."
+  (interactive)
+  (isearch-exit)
+  (goto-char isearch-other-end))
+#+end_src
+
 ** Navigation
 *** newline above
 
