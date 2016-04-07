@@ -565,6 +565,30 @@ Lets me quickly filter the files in dired using "/", and to exit the filtering I
               ("P" . peep-dired)))
 #+end_src
 
+*** Open recent directory 
+
+source: http://blog.binchen.org/posts/use-ivy-to-open-recent-directories.html
+
+#+begin_src emacs-lisp
+(use-package counsel
+  :ensure t
+	:init
+(defun counsel-goto-recent-directory ()
+  "Open recent directory with dired"
+  (interactive)
+  (unless recentf-mode (recentf-mode 1))
+  (let ((collection
+         (delete-dups
+          (append (mapcar 'file-name-directory recentf-list)
+                  ;; fasd history
+                  (if (executable-find "fasd")
+                      (split-string (shell-command-to-string "fasd -ld") "\n" t))))))
+    (ivy-read "directories:" collection :action 'dired)))
+		(global-set-key (kbd "C-x d") 'counsel-goto-recent-directory)
+
+)
+#+end_src
+
 *** bookmark+
 #+begin_src emacs-lisp
 (use-package bookmark+
