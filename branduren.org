@@ -750,24 +750,11 @@ Makes it easy to find and edit all lines matching a given regexp.
 )
 #+end_src
 
-*** Ace Jump mode
-
-ace-jump mode
-
+*** Avy
 #+begin_src emacs-lisp
-(use-package ace-jump-mode
-  :ensure ace-jump-mode)
-#+end_src
-
-#+begin_src emacs-lisp
-(add-hook 'ace-jump-mode-before-jump-hook
-             (lambda () (push-mark (point) t)))
-#+end_src
-
-Lets me jump to a specific char anywhere on the screen three key strokes. C-\. [char] [the char value on screen]
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "C-\.") 'ace-jump-char-mode)
+(use-package avy
+  :ensure t
+  :bind (("M-s" . avy-goto-word-1)))
 #+end_src
 
 ** Correction ispell
