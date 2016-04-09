@@ -553,10 +553,10 @@ Lets me quickly filter the files in dired using "/", and to exit the filtering I
 (use-package dired-narrow
   :ensure t
   :bind (:map dired-mode-map
-              ("/" . dired-narrow)))
+              ("/" . dired-narrow-regexp)))
 #+end_src
 
-***  peep-dired
+*** Peep-dired
 #+begin_src emacs-lisp
 (use-package peep-dired
   :ensure t
