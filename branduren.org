@@ -1072,12 +1072,15 @@ https://github.com/abo-abo/hydra/wiki/Org-clock
  (bind-key "C-c w" 'myfunc/hydra-org-clock/body)
  (defhydra myfunc/hydra-org-clock (:color blue :hint nil)
    "
-Clock   In/out^     ^Edit^   ^Summary     (_?_)
+Clock/Timer^^   In/out^    ^Edit^   ^Summary     (_?_)
 -----------------------------------------
-        _i_n         _e_dit   _g_oto entry
-        _c_ontinue   _q_uit   _d_isplay
-        _o_ut        ^ ^      _r_eport
+_s_et timer     _i_n        _e_dit   _g_oto entry
+_b_egin timer   _c_ontinue  _q_uit   _d_isplay
+_f_inish timer  _o_ut       ^ ^      _r_eport
       "
+   ("s" org-timer-set-timer)
+   ("b" org-timer-start)
+   ("f" org-timer-stop)
    ("i" org-clock-in)
    ("o" org-clock-out)
    ("c" org-clock-in-last)
@@ -1088,6 +1091,11 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
    ("r" org-clock-report)
    ("?" (org-info "Clocking commands")))
 #+end_src
+
+#+begin_src emacs-lisp
+(setq org-clock-sound "/home/branduren/audio/sound.wav")
+#+end_src
+
 
 *** Estimating tasks
 
