@@ -1993,8 +1993,19 @@ It generates one format for plaintext and another for html.
 #+end_src
 
 *** Restclient
+Great mode for testing and debugging http requests.
+
+ #+begin_src emacs-lisp
 (use-package restclient
-   :ensure restclient)
+   :ensure t)
+#+end_src
+
+Make restclient-mode in babel
+ #+begin_src emacs-lisp
+(use-package ob-restclient
+   :ensure t)
+#+end_src
+
 *** ESS
  #+begin_src emacs-lisp
  (use-package ess-R-data-view
