@@ -1327,11 +1327,10 @@ I almost always want to go to the right indentation on the next line.
 
 *** Expand region
 
-Sadly I hardly ever use this, but its too awesome to through away - emacsrocks.
-used to have it bound to C-. but it was replaced with ace-jump-char-mode.
 #+begin_src emacs-lisp
   (use-package expand-region
-    :ensure expand-region)
+    :ensure expand-region
+    :bind ("C-." . er/expand-region))
 #+end_src
 
 *** Snippets
