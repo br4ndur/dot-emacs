@@ -1692,13 +1692,17 @@ Tracks rss and atom feeds.
     "https://www.schneier.com/blog/atom.xml"                       ; security
     "http://firelystashe.tumblr.com/rss"                           ; such a great artist
     "http://leoville.tv/podcasts/sn.xml"                           ; security now
+		"https://www.eff.org/rss/updates.xml"                          ; security
     "http://irreal.org/blog/?feed=rss2"                            ; emacs
     "http://pragmaticemacs.com/feed/"                              ; emacs
     "http://nullprogram.com/feed/"                                 ; emacs
     "http://sachachua.com/blog/feed/"                              ; emacs
     "http://emacsredux.com/atom.xml"                               ; emacs
     "http://endlessparentheses.com/atom.xml"                       ; emacs
+    "https://www.reddit.com/r/emacs/.rss"                          ; emacs
     "http://wsmoak.net/feed.xml"                                   ; elixir
+		"http://feeds.wnyc.org/radiolab"                               ; curiosity
+
     ))
 )
 ;    (run-with-timer 0 300 'elfeed-update)
