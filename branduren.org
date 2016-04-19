@@ -198,23 +198,10 @@ Use y-n instead of yes-no.
 
 *** Theme settings
 
-Using tango with some minor modifications.
-
 #+begin_src emacs-lisp
-  (defun myfunc/setup-color-theme ()
-    (interactive)
-    (load-theme 'tango-dark t)
-    (set-face-background 'default "black")
-    (set-face-background 'mode-line "gray10")
-    (set-face-foreground 'mode-line "white")
-    (set-face-attribute 'fringe nil :background "black")
-    (add-to-list 'default-frame-alist '(cursor-color . "white"))
-  )
-
   (use-package color-theme
     :ensure color-theme
-    :init
-    (myfunc/setup-color-theme))
+  )
 #+end_src
 
 #+begin_src emacs-lisp
