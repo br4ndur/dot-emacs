@@ -1631,7 +1631,6 @@ Tracks rss and atom feeds.
             "https://www.schneier.com/blog/atom.xml"                       ; security
             "http://firelystashe.tumblr.com/rss"                           ; such a great artist
             "http://leoville.tv/podcasts/sn.xml"                           ; security now
-            "https://www.eff.org/rss/updates.xml"                          ; security
             "http://irreal.org/blog/?feed=rss2"                            ; emacs
             "http://pragmaticemacs.com/feed/"                              ; emacs
             "http://nullprogram.com/feed/"                                 ; emacs
