@@ -390,19 +390,6 @@ After typing C-u C-<SPC> you can type C-<SPC> instead of C-u C-<SPC> to cycle th
   (setq set-mark-command-repeat-pop t)
 #+end_src
 
-*** Text size
-#+begin_src emacs-lisp
-  (use-package hydra
-    :ensure hydra)
-#+end_src
-
-#+begin_src emacs-lisp
-  (defhydra hydra-zoom (global-map "<f6>")
-    "zoom"
-    ("g" text-scale-increase "in")
-    ("l" text-scale-decrease "out"))
-#+end_src
-
 *** Killing bactwards
 
 Use ctrl+h for delting backwards.
@@ -1027,38 +1014,6 @@ Too many clock entries clutter up a heading.
 #+begin_src emacs-lisp
   (setq org-log-into-drawer "LOGBOOK")
   (setq org-clock-into-drawer 1)
-#+end_src
-
-*** hydra-org-clock
-
-https://github.com/abo-abo/hydra/wiki/Org-clock
-
-#+begin_src emacs-lisp
-  (bind-key "C-c w" 'myfunc/hydra-org-clock/body)
-  (defhydra myfunc/hydra-org-clock (:color blue :hint nil)
-    "
-  Clock/Timer^^   In/out^    ^Edit^   ^Summary     (_?_)
-  -----------------------------------------
-  _s_et timer     _i_n        _e_dit   _g_oto entry
-  _b_egin timer   _c_ontinue  _q_uit   _d_isplay
-  _f_inish timer  _o_ut       ^ ^      _r_eport
-        "
-    ("s" org-timer-set-timer)
-    ("b" org-timer-start)
-    ("f" org-timer-stop)
-    ("i" org-clock-in)
-    ("o" org-clock-out)
-    ("c" org-clock-in-last)
-    ("e" org-clock-modify-effort-estimate)
-    ("q" org-clock-cancel)
-    ("g" org-clock-goto)
-    ("d" org-clock-display)
-    ("r" org-clock-report)
-    ("?" (org-info "Clocking commands")))
-#+end_src
-
-#+begin_src emacs-lisp
-  (setq org-clock-sound "/home/branduren/audio/sound.wav")
 #+end_src
 
 *** Estimating tasks
@@ -2097,4 +2052,83 @@ Clear buffer
   (add-hook 'eshell-mode-hook
             '(lambda()
                (local-set-key (kbd "C-l") 'eshell-clear-buffer)))
+#+end_src
+
+** Hydra
+#+begin_src emacs-lisp
+  (use-package hydra
+    :ensure hydra)
+#+end_src
+
+*** Text size
+
+#+begin_src emacs-lisp
+  (defhydra hydra-zoom (global-map "<f6>")
+    "zoom"
+    ("g" text-scale-increase "in")
+    ("l" text-scale-decrease "out"))
+#+end_src
+
+*** Hydra-org-clock
+
+https://github.com/abo-abo/hydra/wiki/Org-clock
+
+#+begin_src emacs-lisp
+  (bind-key "C-c w" 'myfunc/hydra-org-clock/body)
+  (defhydra myfunc/hydra-org-clock (:color blue :hint nil)
+    "
+  Clock/Timer^^   In/out^    ^Edit^   ^Summary     (_?_)
+  -----------------------------------------
+  _s_et timer     _i_n        _e_dit   _g_oto entry
+  _b_egin timer   _c_ontinue  _q_uit   _d_isplay
+  _f_inish timer  _o_ut       ^ ^      _r_eport
+        "
+    ("s" org-timer-set-timer)
+    ("b" org-timer-start)
+    ("f" org-timer-stop)
+    ("i" org-clock-in)
+    ("o" org-clock-out)
+    ("c" org-clock-in-last)
+    ("e" org-clock-modify-effort-estimate)
+    ("q" org-clock-cancel)
+    ("g" org-clock-goto)
+    ("d" org-clock-display)
+    ("r" org-clock-report)
+    ("?" (org-info "Clocking commands")))
+#+end_src
+
+#+begin_src emacs-lisp
+  (setq org-clock-sound "/home/branduren/audio/sound.wav")
+#+end_src
+
+*** Hydra-networking
+
+My first hydra function. It's nice to get an overview.
+
+#+begin_src emacs-lisp
+  (bind-key "<f12>" 'myfunc/hydra-networking/body)
+  (defhydra myfunc/hydra-networking (:color blue :hint nil)
+    "
+  Network utils^^
+  ------------------------------------
+  i_f_config
+  i_w_config
+  n_e_tstat
+  _a_rp
+  _r_oute
+  _t_raceroute
+  _p_ing
+  n_s_lookup
+  _d_ig
+"
+    ("f" ifconfig)
+    ("w" iwconfig)
+    ("e" netstat)
+    ("a" arp)
+    ("r" route)
+    ("t" traceroute)
+    ("p" ping)
+    ("s" nslookup)
+    ("d" run-dig)
+)
 #+end_src
