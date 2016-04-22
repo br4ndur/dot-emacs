@@ -709,7 +709,10 @@ Makes it easy to find and edit all lines matching a given regexp.
 #+begin_src emacs-lisp
   (use-package avy
     :ensure t
-    :bind (("M-s" . avy-goto-word-1)))
+    :bind (("M-s" . avy-goto-word-1))
+    :init
+    (setq avy-keys
+          '(?h ?u ?t ?e ?n ?o ?s ?a ?d ?i ?g ?p ?c ?r ?b ?k ?y ?f)))
 #+end_src
 
 ** Correction ispell
