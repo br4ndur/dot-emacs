@@ -390,34 +390,6 @@ After typing C-u C-<SPC> you can type C-<SPC> instead of C-u C-<SPC> to cycle th
   (setq set-mark-command-repeat-pop t)
 #+end_src
 
-*** Killing bactwards
-
-Use ctrl+h for delting backwards.
-alt+h for killing words backwrd.
-
-#+begin_src emacs-lisp
-  (defun myfunc-delete-region (&optional arg)
-    (interactive "p")
-    (if (region-active-p)
-        (delete-region (region-beginning) (region-end))
-      (delete-char arg)))
-
-  ;; kill no region
-  (defun myfunc-bck-kill-word-or-kill-region (&optional arg)
-    (interactive "p")
-    (if (region-active-p)
-        (kill-region (region-beginning) (region-end))
-      (backward-kill-word arg)))
-
-  ;; delete with ease
-  (global-set-key (kbd "C-h") 'backward-delete-char)
-  (global-set-key (kbd "C-d") 'myfunc-delete-region )
-  (global-set-key (kbd "M-h") 'myfunc-bck-kill-word-or-kill-region)
-
-  ;; help
-  (global-set-key (kbd "C-S-h") 'help)
-#+end_src
-
 *** Frequently-accessed files
 Registers allow you to jump to a file or other location quickly. To
 jump to a register, use =C-x r j= followed by the letter of the
@@ -904,18 +876,19 @@ Lets me display math formulas directly in the org-buffer
   (bind-key "C-M-n" 'org-metadown)
 #+end_src
 
-Toggle results
+**** Org-mode-hook set key
 #+begin_src emacs-lisp
-                                          ;(add-hook 'org-mode-hook
-                                          ;      '(lambda()
-                                          ;          (local-set-key (kbd "C-c t") 'org-babel-hide-result-toggle)))
+  (add-hook 'org-mode-hook
+            '(lambda()
+               (local-set-key (kbd "C-c t") 'org-babel-hide-result-toggle)
+               (local-set-key (kbd "C-c d") 'org-babel-remove-result)))
 #+end_src
 
-Append-next-kill when you want to append to previous kill
+**** Org-mode-hook unset key
 #+begin_src emacs-lisp
-  (eval-after-load 'org
-    '(progn
-       (bind-key "C-M-w" 'append-next-kill org-mode-map)))
+  (add-hook 'org-mode-hook
+            '(lambda()
+               (local-unset-key (kbd "M-h"))))
 #+end_src
 
 *** Navigation
@@ -1982,6 +1955,26 @@ Make restclient-mode in babel
 
   ;; I want the *R* process in its own frame
                                           ;(setq inferior-ess-own-frame t)
+#+end_src
+
+** Minor modes
+*** Subword
+
+#+begin_src emacs-lisp
+  (global-subword-mode t)
+#+end_src
+
+Use ctrl+h for delting backwards.
+alt+h for killing words backwrd.
+
+Rememer to unset "M-h" in org-mode [[Org-mode-hook unset key]]
+#+begin_src emacs-lisp
+  ;; delete with ease
+  (global-set-key (kbd "C-h") 'backward-delete-char)
+  (global-set-key (kbd "M-h") 'subword-backward-kill)
+
+  ;; help
+  (global-set-key (kbd "C-S-h") 'help)
 #+end_src
 
 ** Autocomplete
