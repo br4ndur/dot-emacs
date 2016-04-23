@@ -1351,6 +1351,13 @@ Indentation
     )
 #+end_src
 
+*** sass-mode
+#+begin_src emacs-lisp
+  (use-package sass-mode
+    :ensure t
+    )
+#+end_src
+
 ** Database
 
 Lets me connect to a database.
