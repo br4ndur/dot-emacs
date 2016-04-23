@@ -691,9 +691,10 @@ Select region C-* and bang, I got a cursor for each identical region. This mode 
     :ensure multiple-cursors
     :diminish multiple-cursors
     :bind
-    (("C->" . mc/mark-next-like-this)
+    (("C-S-c C-S-c") . 'mc/edit-lines)
+     ("C->" . mc/mark-next-like-this)
      ("C-<" . mc/mark-previous-like-this)
-     ("C-*" . mc/mark-all-like-this)))
+     ("C-*" . mc/mark-all-like-this))
 #+end_src
 
 *** All
