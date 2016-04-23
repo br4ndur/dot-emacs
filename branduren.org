@@ -1331,6 +1331,17 @@ Indentation
     )
 #+end_src
 
+*** Rainbow-mode
+
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :ensure t
+    :init
+    (add-hook 'css-mode-hook (lambda () (rainbow-mode t)))
+    (add-hook 'sass-mode-hook (lambda () (rainbow-mode t)))
+    (add-hook 'scss-mode-hook (lambda () (rainbow-mode t)))
+#+end_src
+
 ** Database
 
 Lets me connect to a database.
