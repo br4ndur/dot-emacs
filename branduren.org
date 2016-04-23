@@ -2118,29 +2118,101 @@ https://github.com/abo-abo/hydra/wiki/Org-clock
 My first hydra function. It's nice to get an overview.
 
 #+begin_src emacs-lisp
-  (bind-key "<f12>" 'myfunc/hydra-networking/body)
-  (defhydra myfunc/hydra-networking (:color blue :hint nil)
-    "
-  Network utils^^
-  ------------------------------------
-  i_f_config
-  i_w_config
-  n_e_tstat
-  _a_rp
-  _r_oute
-  _t_raceroute
-  _p_ing
-  n_s_lookup
-  _d_ig
-"
-    ("f" ifconfig)
-    ("w" iwconfig)
-    ("e" netstat)
-    ("a" arp)
-    ("r" route)
-    ("t" traceroute)
-    ("p" ping)
-    ("s" nslookup)
-    ("d" run-dig)
-)
+    (bind-key "<f12>" 'myfunc/hydra-networking/body)
+    (defhydra myfunc/hydra-networking (:color blue :hint nil)
+      "
+    Network utils^^
+    ------------------------------------
+    i_f_config
+    i_w_config
+    n_e_tstat
+    _a_rp
+    _r_oute
+    _t_raceroute
+    _p_ing
+    n_s_lookup
+    _d_ig
+  "
+      ("f" (lambda () (interactive) (ifconfig) (other-window 1)))
+      ("w" (lambda () (interactive) (iwconfig) (other-window 1)))
+      ("e" (lambda () (interactive) (netstat) (other-window 1)))
+      ("a" (lambda () (interactive) (arp) (other-window 1)))
+      ("r" (lambda () (interactive) (route) (other-window 1)))
+      ("t" traceroute)
+      ("p" ping)
+      ("s" nslookup)
+      ("d" run-dig)
+  )
 #+end_src
+
+* experimental
+
+(defun get-ip-address (&optional dev)
+  "get the IP-address for device DEV (default: eth0)"
+  (let ((dev (if dev dev "eth0")))
+    (format-network-address (car (network-interface-info dev)) t)))
+
+(network-interface-list)
+
+
+(defun print-elements-of-list (list)
+  "Print each element of LIST on a line of its own."
+  (while list
+    (if (not (equal list nil))
+        (print (car (car list))))
+    ;(print (car list))
+    (setq list (cdr list))))
+
+(print-elements-of-list (network-interface-list))
+
+(defun ip-list ()
+    (let ((ilist (network-interface-list))
+          (iplist '()))
+      (while ilist
+        (let ((i 0)
+              (device (car (car ilist)))
+              (ipv (cdr (car ilist))))
+          (setq ip "")
+          (while (< i (- (length ipv) 1))
+            (setq ip (concat ip (format "%d" (elt ipv i))))
+            (if (< i 3)
+                (setq ip (concat ip ".")))
+            (setq i (1+ i)))
+          (message (concat device " " ip))
+          (setq iplist (append iplist (list (list device ip)))))
+        (setq ilist (cdr ilist)))
+
+      iplist))
+(ip-list)
+
+(print network-interface-info)
+(apply 'concat (network-interface-list))
+
+(nmap "sP")
+(message (car (cdr(cdr (network-interface-info "lo"))))
+(message (get-ip-address))
+(message (get-ip-address "wlp3s0"))
+(message dev)
+
+
+
+*** simple-mpc
+
+(simple-mpc-call-mpc t "playlist")
+(simple-mpc-call-mpc t "play")
+
+(simple-mpc-call-mpc t (list "load" "music/Brandur/5-vem-kan-segla-forutan-vind.ogg")
+
+(simple-mpc-call-mpc t (list "ls" "music/Brandur/"))
+
+(simple-mpc-call-mpc t (list "lsplaylists"))
+
+
+
+(simple-mpc-call-mpc t (list "move" "1" "2"))
+
+(simple-mpc-call-mpc t (list "save" "queue"))
+
+(simple-mpc-call-mpc t "save")
+(directory-files simple-mpc-mpd-playlist-directory nil "[a-zA-Z]+")
+(directory-files simple-mpc-mpd-playlist-directory nil "[a-zA-Z]+")
