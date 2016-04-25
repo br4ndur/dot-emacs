@@ -1337,7 +1337,7 @@ Indentation
     :init
     (add-hook 'css-mode-hook (lambda () (rainbow-mode t)))
     (add-hook 'sass-mode-hook (lambda () (rainbow-mode t)))
-    (add-hook 'scss-mode-hook (lambda () (rainbow-mode t)))
+    (add-hook 'scss-mode-hook (lambda () (rainbow-mode t))))
 #+end_src
 
 ** Database
