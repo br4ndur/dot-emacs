@@ -656,17 +656,15 @@ See it in action here: http://emacsrocks.com/e13.html
 #+end_src
 
 *** Multiple cursors mode
-Select region C-* and bang, I got a cursor for each identical region. This mode really makes me happy.
 
 #+begin_src emacs-lisp
   (use-package multiple-cursors
     :ensure multiple-cursors
     :diminish multiple-cursors
-    :bind
-    (("C-S-c C-S-c") . 'mc/edit-lines)
-     ("C->" . mc/mark-next-like-this)
-     ("C-<" . mc/mark-previous-like-this)
-     ("C-*" . mc/mark-all-like-this))
+    :bind (("C-s-c C-s-c" . mc/edit-lines)
+           ("C->"         . mc/mark-next-like-this)
+           ("C-<"         . mc/mark-previous-like-this)
+           ("C-*"         . mc/mark-all-like-this)))
 #+end_src
 
 *** All
