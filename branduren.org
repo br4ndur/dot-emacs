@@ -1990,29 +1990,49 @@ Rememer to unset "M-h" in org-mode [[Org-mode-hook unset key]]
 *** Selected
 
 #+begin_src emacs-lisp
-  (use-package selected
-    :commands selected-minor-mode
-    :init
-    (setq selected-org-mode-map (make-sparse-keymap))
-    (selected-minor-mode)
-    :bind (:map selected-keymap
-                ("a" . mc/mark-all-like-this)
-                ("e" . mc/edit-lines)
-                ("!" . shell-command-on-region)
-                (";" . comment-or-uncomment-region)
-                ("SPC" . exchange-point-and-mark)
-                ("RET" . rectangle-mark-mode)
-                ("g" . google-this-noconfirm)
-                ("u" . upcase-region)
-                ("c" . capitalize-region)
-                ("l" . downcase-region)
-                ("C" . count-words-region)
-                ("y" . yank)
-                ("k" . kill-region)
-                ("w" . copy-region-as-kill)
-                ("m" . apply-macro-to-region-lines)
-                :map selected-org-mode-map
-                ("t" . org-table-convert-region)))
+    (use-package selected
+      :commands selected-minor-mode
+      :init
+      (setq selected-org-mode-map (make-sparse-keymap))
+      (selected-minor-mode)
+      :bind (:map selected-keymap
+                  ("a" . mc/mark-all-like-this)
+                  ("e" . mc/edit-lines)
+                  ("!" . shell-command-on-region)
+                  (";" . comment-or-uncomment-region)
+                  ("SPC" . exchange-point-and-mark)
+                  ("RET" . rectangle-mark-mode)
+                  ("g" . google-this-noconfirm)
+                  ("u" . upcase-region)
+                  ("c" . capitalize-region)
+                  ("l" . downcase-region)
+                  ("C" . count-words-region)
+                  ("y" . yank)
+                  ("k" . kill-region)
+                  ("w" . copy-region-as-kill)
+                  ("m" . apply-macro-to-region-lines)
+                  ("v" . myfunc-view-region-in-new-buffer)
+                  :map selected-org-mode-map
+                  ("t" . org-table-convert-region)))
+#+end_src
+
+**** View region in new buffermyfunc
+A function I created which inserts the region into a new buffer. It works perfectly with selected-minor-mode.
+
+#+begin_src emacs-lisp
+  (defun myfunc-view-region-in-new-buffer (beg end &optional arg)
+    "Copy region to new buffer and switch to that buffer in other-window"
+    (interactive "*r\nP")
+    (if (> beg end) (let (mid) (setq mid beg beg end end mid)))
+    (let ((buffer-name (buffer-substring beg (+ beg 10)))
+          (mode major-mode))
+      (generate-new-buffer buffer-name)
+      (copy-to-buffer buffer-name beg end)
+      (save-excursion
+        (switch-to-buffer buffer-name)
+        (funcall mode)
+        (switch-to-prev-buffer))
+      (switch-to-buffer-other-window buffer-name)))
 #+end_src
 
 ** Autocomplete
