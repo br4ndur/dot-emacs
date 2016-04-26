@@ -1962,6 +1962,12 @@ Make restclient-mode in babel
 #+end_src
 
 ** Minor modes
+*** Google-this
+#+begin_src emacs-lisp
+  (use-package google-this
+    :ensure t
+  )
+#+end_src
 *** Subword
 
 #+begin_src emacs-lisp
