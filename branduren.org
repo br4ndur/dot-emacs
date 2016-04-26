@@ -1225,21 +1225,16 @@ I almost always want to go to the right indentation on the next line.
 #+begin_src emacs-lisp
   (use-package yasnippet
     :ensure yasnippet
+    :config
+    (setq yas-snippet-dirs "~/.emacs.d/snippets")
     :init
-    (add-hook 'web-mode-hook #'(lambda () (yas-activate-extra-mode 'html-mode 'php-mode)))
-    (yas-global-mode 1)
-    (yas-load-directory "~/.emacs.d/snippets/"))
+    ;(add-hook 'web-mode-hook #'(lambda () (yas-activate-extra-mode 'html-mode 'php-mode)))
+    (yas-global-mode t))
 
   (use-package helm-c-yasnippet
     :ensure helm-c-yasnippet
     :init
     (global-set-key (kbd "C-c y") 'helm-yas-complete))
-
-
-  ;; If i'm not reloading, there will be no snippets for webmode. Must be a better way.
-  (yas-reload-all 1)
-
-  (add-hook 'term-mode-hook (lambda () (yas-minor-mode -1)))
 #+end_src
 
 *** Don't show whitespace in diff, but show context
