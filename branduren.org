@@ -1987,13 +1987,42 @@ Rememer to unset "M-h" in org-mode [[Org-mode-hook unset key]]
   (global-set-key (kbd "C-S-h") 'help)
 #+end_src
 
+*** Selected
+
+#+begin_src emacs-lisp
+  (use-package selected
+    :commands selected-minor-mode
+    :init
+    (setq selected-org-mode-map (make-sparse-keymap))
+    (selected-minor-mode)
+    :bind (:map selected-keymap
+                ("a" . mc/mark-all-like-this)
+                ("e" . mc/edit-lines)
+                ("!" . shell-command-on-region)
+                (";" . comment-or-uncomment-region)
+                ("SPC" . exchange-point-and-mark)
+                ("RET" . rectangle-mark-mode)
+                ("g" . google-this-noconfirm)
+                ("u" . upcase-region)
+                ("c" . capitalize-region)
+                ("l" . downcase-region)
+                ("C" . count-words-region)
+                ("y" . yank)
+                ("k" . kill-region)
+                ("w" . copy-region-as-kill)
+                ("m" . apply-macro-to-region-lines)
+                :map selected-org-mode-map
+                ("t" . org-table-convert-region)))
+#+end_src
+
 ** Autocomplete
 
 #+begin_src emacs-lisp
   (use-package company
     :ensure company
-    :config
-    (define-key company-active-map (kbd "C-n") #'company-select-next)
+    ;; :config
+    ;; (define-key company-active-map (kbd "C-n") #'company-select-next)
+    :init
     (define-key company-active-map (kbd "C-p") #'company-select-previous)
 
     ;; colors
