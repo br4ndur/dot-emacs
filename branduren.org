@@ -1991,6 +1991,7 @@ Rememer to unset "M-h" in org-mode [[Org-mode-hook unset key]]
 
 #+begin_src emacs-lisp
     (use-package selected
+      :ensure t
       :commands selected-minor-mode
       :init
       (setq selected-org-mode-map (make-sparse-keymap))
