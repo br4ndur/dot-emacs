@@ -1529,6 +1529,13 @@ Remove the default, annoying, gray background on 80% of the webpages.
 #+end_src
 
 ** Major modes
+*** docker
+#+begin_src emacs-lisp
+  (use-package docker
+    :ensure t
+    )
+#+end_src
+
 *** fireplace
 A cozy fireplace
 
